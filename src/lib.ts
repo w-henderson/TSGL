@@ -1,63 +1,39 @@
-import vertex from "./shaders/vertex";
-import fragment from "./shaders/fragment";
+import { Matrix } from "./matrix";
 
-import { createShader } from "./webgl/shader";
-import { createProgram } from "./webgl/program";
+import Shader from "./webgl/shader";
+import Program from "./webgl/program";
+import Cube from "./webgl/cube";
+import Texture from "./webgl/texture";
+import Camera from "./camera";
+
+import VERTEX_SHADER from "./shaders/vertex";
+import FRAGMENT_SHADER from "./shaders/fragment";
+import Entity from "./webgl/entity";
 
 class TSGL {
   private canvas: HTMLCanvasElement;
-  private ctx: WebGLRenderingContext;
+  private ctx: WebGL2RenderingContext;
 
-  private vertexShader: WebGLShader | null = null;
-  private fragmentShader: WebGLShader | null = null;
-  private program: WebGLProgram | null = null;
-
-  private positionBuffer: WebGLBuffer | null = null;
-  private positionAttributeLocation: number = 0;
+  private camera: Camera;
+  private entity: Entity;
 
   public constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext("webgl")!;
+    this.ctx = canvas.getContext("webgl2")!;
+    this.camera = new Camera(this.canvas.height / this.canvas.width, 45);
+    this.entity = new Entity(this.ctx, new Cube(this.ctx), new Texture(this.ctx));
 
-    this.vertexShader = createShader(this.ctx, this.ctx.VERTEX_SHADER, vertex);
-    this.fragmentShader = createShader(this.ctx, this.ctx.FRAGMENT_SHADER, fragment);
-    this.program = createProgram(this.ctx, this.vertexShader!, this.fragmentShader!);
-
-    this.positionAttributeLocation = this.ctx.getAttribLocation(this.program!, "oc_position");
-    this.positionBuffer = this.ctx.createBuffer();
-    this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.positionBuffer);
-
-    let positions = [
-      0, 0,
-      0, 0.5,
-      0.7, 0
-    ];
-    this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(positions), this.ctx.STATIC_DRAW);
-
-    this.render();
+    this.ctx.enable(this.ctx.CULL_FACE);
+    this.ctx.cullFace(this.ctx.BACK);
+    this.ctx.enable(this.ctx.DEPTH_TEST);
   }
 
   public render() {
     this.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.clearColor(0, 0, 0, 1);
-    this.ctx.clear(this.ctx.COLOR_BUFFER_BIT);
+    this.ctx.clearColor(1, 1, 1, 1);
+    this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
 
-    this.ctx.useProgram(this.program!);
-
-    this.ctx.enableVertexAttribArray(this.positionAttributeLocation);
-
-    this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.positionBuffer);
-
-    let size = 2;
-    let type = this.ctx.FLOAT;
-    let normalize = false;
-    let stride = 0;
-    let offset = 0;
-    this.ctx.vertexAttribPointer(this.positionAttributeLocation, size, type, normalize, stride, offset);
-
-    let primitiveType = this.ctx.TRIANGLES;
-    let count = 3;
-    this.ctx.drawArrays(primitiveType, offset, count);
+    this.entity.render(this.camera);
   }
 }
 

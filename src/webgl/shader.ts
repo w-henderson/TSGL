@@ -1,14 +1,30 @@
-export function createShader(ctx: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
-  let shader = ctx.createShader(type);
-  if (shader === null) return null;
-  ctx.shaderSource(shader, source);
-  ctx.compileShader(shader);
+class Shader {
+  private ctx: WebGL2RenderingContext;
+  private shader: WebGLShader | null;
 
-  let success = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS);
-  if (success) return shader;
+  constructor(ctx: WebGL2RenderingContext, type: number, source: string) {
+    this.ctx = ctx;
+    this.shader = this.createShader(type, source);
+  }
 
-  console.error(ctx.getShaderInfoLog(shader));
-  ctx.deleteShader(shader);
+  public getHandle(): WebGLShader | null {
+    return this.shader;
+  }
 
-  return null;
+  private createShader(type: number, source: string): WebGLShader | null {
+    let shader = this.ctx.createShader(type);
+    if (shader === null) return null;
+    this.ctx.shaderSource(shader, source);
+    this.ctx.compileShader(shader);
+
+    let success = this.ctx.getShaderParameter(shader, this.ctx.COMPILE_STATUS);
+    if (success) return shader;
+
+    console.error(this.ctx.getShaderInfoLog(shader));
+    this.ctx.deleteShader(shader);
+
+    return null;
+  }
 }
+
+export default Shader;
