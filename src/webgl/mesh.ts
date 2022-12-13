@@ -41,7 +41,7 @@ abstract class Mesh {
     modelMatrix.uploadToShader(shader, "m_matrix");
     camera.getPosition().uploadToShader(shader, "wc_camera_position");
 
-    let normalMatrix = new Matrix(3, 3);
+    let normalMatrix = modelMatrix.invert().transpose3x3();
     normalMatrix.uploadToShader(shader, "normal_matrix");
 
     texture.bindTexture();

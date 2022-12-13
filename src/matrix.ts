@@ -67,6 +67,43 @@ export class Matrix {
     return result;
   }
 
+  public invert(): Matrix {
+    if (this.rows !== 4 || this.columns !== 4) {
+      throw new Error("Not implemented for this matrix type");
+    }
+
+    let array = [
+      [this.data[0], this.data[1], this.data[2], this.data[3]],
+      [this.data[4], this.data[5], this.data[6], this.data[7]],
+      [this.data[8], this.data[9], this.data[10], this.data[11]],
+      [this.data[12], this.data[13], this.data[14], this.data[15]]
+    ];
+
+    let result = (window as any).math.inv(array);
+
+    return Matrix.squareFromArray(result.flat());
+  }
+
+  public transpose3x3(): Matrix {
+    if (this.rows !== 4 || this.columns !== 4) {
+      throw new Error("Not implemented for this matrix type");
+    }
+
+    let result = new Matrix(3, 3);
+
+    result.data[0] = this.data[0];
+    result.data[1] = this.data[4];
+    result.data[2] = this.data[8];
+    result.data[3] = this.data[1];
+    result.data[4] = this.data[5];
+    result.data[5] = this.data[9];
+    result.data[6] = this.data[2];
+    result.data[7] = this.data[6];
+    result.data[8] = this.data[10];
+
+    return result;
+  }
+
   public get(row: number, column: number): number {
     return this.data[row * this.columns + column];
   }
@@ -133,5 +170,9 @@ export class Vector {
     let ctx = program.getContext();
     let location = ctx.getUniformLocation(program.getHandle()!, target)!;
     ctx.uniform3f(location, this.x, this.y, this.z);
+  }
+
+  public toString(): string {
+    return `(${this.x}, ${this.y}, ${this.z})`;
   }
 }

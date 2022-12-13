@@ -1,20 +1,14 @@
-import { Matrix } from "./matrix";
-
-import Shader from "./webgl/shader";
-import Program from "./webgl/program";
 import Cube from "./webgl/cube";
 import Texture from "./webgl/texture";
 import Camera from "./camera";
 
-import VERTEX_SHADER from "./shaders/vertex";
-import FRAGMENT_SHADER from "./shaders/fragment";
 import Entity from "./webgl/entity";
 
 class TSGL {
   private canvas: HTMLCanvasElement;
   private ctx: WebGL2RenderingContext;
 
-  private camera: Camera;
+  public camera: Camera;
   private entity: Entity;
 
   public constructor(canvas: HTMLCanvasElement) {

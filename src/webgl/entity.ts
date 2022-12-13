@@ -11,12 +11,14 @@ import FRAGMENT_SHADER from "../shaders/fragment";
 
 class Entity {
   private ctx: WebGL2RenderingContext;
+  public model: Matrix;
   private mesh: Mesh;
   private shader: ShaderProgram;
   private texture: Texture;
 
   constructor(ctx: WebGL2RenderingContext, mesh: Mesh, texture: Texture) {
     this.ctx = ctx;
+    this.model = new Matrix(4, 4);
     this.mesh = mesh;
     this.texture = texture;
 
@@ -33,7 +35,7 @@ class Entity {
   }
 
   render(camera: Camera) {
-    this.mesh.render(camera, new Matrix(4, 4), this.shader, this.texture);
+    this.mesh.render(camera, this.model, this.shader, this.texture);
   }
 }
 

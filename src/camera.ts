@@ -1,9 +1,9 @@
 import { Matrix, Vector } from "./matrix";
 
 class Camera {
-  private azimuth: number;
-  private elevation: number;
-  private distance: number;
+  public position: Vector;
+  public azimuth: number;
+  public elevation: number;
 
   private fov: number;
   private aspect: number;
@@ -12,23 +12,37 @@ class Camera {
     this.aspect = aspect;
     this.fov = fov;
 
-    this.azimuth = Math.PI / 4;
-    this.elevation = Math.PI / 4;
-    this.distance = 8;
+    this.position = new Vector(3, 3, 3);
+    this.azimuth = 3 * Math.PI / 4;
+    this.elevation = - Math.PI / 4;
+  }
+
+  public getDirection(): Vector {
+    return new Vector(
+      Math.cos(this.azimuth) * Math.cos(this.elevation),
+      Math.sin(this.elevation),
+      -Math.sin(this.azimuth) * Math.cos(this.elevation)
+    ).scale(-1).normalize();
+  }
+
+  public getRight(): Vector {
+    return new Vector(0, 1, 0).cross(this.getDirection()).normalize();
+  }
+
+  public getUp(): Vector {
+    return this.getDirection().cross(this.getRight()).normalize();
   }
 
   public getViewMatrix(): Matrix {
-    let c = this.getPosition();
-    let l = new Vector(0, 0, 0);
-    let u = new Vector(0, 1, 0);
+    let c = this.position;
 
-    let v = c.sub(l).normalize();
-    let r = v.cross(u).normalize();
-    let u2 = v.cross(r).normalize();
+    let u = this.getUp();
+    let v = this.getDirection();
+    let r = this.getRight();
 
     return Matrix.squareFromArray([
       r.x, r.y, r.z, -c.dot(r),
-      u2.x, u2.y, u2.z, -c.dot(u2),
+      u.x, u.y, u.z, -c.dot(u),
       v.x, v.y, v.z, -c.dot(v),
       0, 0, 0, 1
     ]);
@@ -50,11 +64,7 @@ class Camera {
   }
 
   public getPosition(): Vector {
-    return new Vector(
-      this.distance * Math.cos(this.elevation) * Math.sin(this.azimuth),
-      this.distance * Math.sin(this.elevation),
-      this.distance * Math.cos(this.elevation) * Math.cos(this.azimuth)
-    );
+    return this.position;
   }
 }
 
