@@ -1,9 +1,16 @@
 import TSGL from "./lib";
+import Obj from "./obj/obj";
+import Entity from "./webgl/entity";
+import Texture from "./webgl/texture";
 import { Vector } from "./matrix";
 
-window.onload = () => {
+window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
+  let object = await Obj.parse(tsgl.getCtx(), "models/elephant.obj");
+  let meshes = object.getMeshes();
+  let entities = meshes.map(mesh => new Entity(tsgl.getCtx(), mesh, new Texture(tsgl.getCtx())));
+  tsgl.addEntity(...entities);
 
   let keysDown = new Set<string>();
 

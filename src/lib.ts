@@ -1,7 +1,4 @@
-import Cube from "./webgl/cube";
-import Texture from "./webgl/texture";
 import Camera from "./camera";
-
 import Entity from "./webgl/entity";
 
 class TSGL {
@@ -9,17 +6,22 @@ class TSGL {
   private ctx: WebGL2RenderingContext;
 
   public camera: Camera;
-  private entity: Entity;
+  private entities: Entity[];
 
   public constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("webgl2")!;
     this.camera = new Camera(this.canvas.height / this.canvas.width, 45);
-    this.entity = new Entity(this.ctx, new Cube(this.ctx), new Texture(this.ctx));
+
+    this.entities = [];
 
     this.ctx.enable(this.ctx.CULL_FACE);
     this.ctx.cullFace(this.ctx.BACK);
     this.ctx.enable(this.ctx.DEPTH_TEST);
+  }
+
+  public addEntity(...entities: Entity[]) {
+    this.entities.push(...entities);
   }
 
   public render() {
@@ -27,7 +29,13 @@ class TSGL {
     this.ctx.clearColor(1, 1, 1, 1);
     this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
 
-    this.entity.render(this.camera);
+    for (let entity of this.entities) {
+      entity.render(this.camera);
+    }
+  }
+
+  public getCtx(): WebGL2RenderingContext {
+    return this.ctx;
   }
 }
 

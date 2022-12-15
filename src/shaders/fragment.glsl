@@ -20,7 +20,7 @@ vec4 tonemap(vec3 linear) {
 
 void main() {
   vec3 ambient_color = vec3(0.01, 0.01, 0.01);
-  vec3 diffuse_color = wc_frag_normal;
+  vec3 diffuse_color = vec3(1, 1, 1);
   vec3 specular_color = vec3(1, 1, 1);
   float alpha = 32.0;
 

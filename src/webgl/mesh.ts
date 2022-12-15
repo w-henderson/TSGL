@@ -3,6 +3,7 @@ import { Matrix } from "../matrix";
 import Camera from "../camera";
 import ShaderProgram from "./program";
 import Texture from "./texture";
+import Material from "../material";
 
 abstract class Mesh {
   private ctx: WebGL2RenderingContext;
@@ -13,6 +14,8 @@ abstract class Mesh {
   public normalHandle: WebGLBuffer | null = null;
   public indexHandle: WebGLBuffer | null = null;
   public texHandle: WebGLBuffer | null = null;
+
+  public material: Material | null = null;
 
   abstract initializeVertexPositions(): number[];
   abstract initializeVertexIndices(): number[];
@@ -30,7 +33,13 @@ abstract class Mesh {
     let textureCoordinates = this.initializeTextureCoordinates();
     this.triangles = vertexIndices.length;
 
+    this.material = this.initializeMaterial();
+
     this.loadOntoGPU(vertexPositions, vertexIndices, vertexNormals, textureCoordinates);
+  }
+
+  public initializeMaterial(): Material {
+    return new Material();
   }
 
   public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram, texture: Texture) {

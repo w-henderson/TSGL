@@ -18,7 +18,12 @@ class Entity {
 
   constructor(ctx: WebGL2RenderingContext, mesh: Mesh, texture: Texture) {
     this.ctx = ctx;
-    this.model = new Matrix(4, 4);
+    this.model = Matrix.squareFromArray([
+      0.01, 0, 0, 0,
+      0, 0.01, 0, 0,
+      0, 0, 0.01, 0,
+      0, 0, 0, 1
+    ]);
     this.mesh = mesh;
     this.texture = texture;
 
