@@ -103,8 +103,8 @@ class Obj {
     for (let i = 1; i < 4; i++) {
       let vertexTokens = tokens[i].split("/");
       let vertexIndex = parseInt(vertexTokens[0]) - 1;
-      let textureCoordinateIndex = parseInt(vertexTokens[1]);
-      let normalIndex = parseInt(vertexTokens[2]);
+      let textureCoordinateIndex = parseInt(vertexTokens[1]) - 1;
+      let normalIndex = parseInt(vertexTokens[2]) - 1;
 
       let vertex = this.vertices.slice(vertexIndex * 3, vertexIndex * 3 + 3);
       let normal = this.normals.slice(normalIndex * 3, normalIndex * 3 + 3);
