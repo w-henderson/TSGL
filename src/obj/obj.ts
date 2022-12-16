@@ -53,7 +53,7 @@ class Obj {
 
     let totalTriangles = 0;
     for (let mesh of obj.meshes) {
-      mesh.finish();
+      await mesh.finish(ctx);
       totalTriangles += mesh.indexCount / 3;
     }
 

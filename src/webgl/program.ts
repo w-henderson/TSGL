@@ -55,8 +55,8 @@ class ShaderProgram {
 
     if (attributeLocation === -1) throw Error("invalid attribute location");
 
-    this.ctx.vertexAttribPointer(attributeLocation, size, this.ctx.FLOAT, false, 0, 0);
     this.ctx.enableVertexAttribArray(attributeLocation);
+    this.ctx.vertexAttribPointer(attributeLocation, size, this.ctx.FLOAT, false, 0, 0);
   }
 
   public bindTextureToShader(sampler: string, texture: number) {

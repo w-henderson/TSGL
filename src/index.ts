@@ -7,10 +7,11 @@ import { Vector } from "./matrix";
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
-  let chicken = await Obj.parse(tsgl.getCtx(), "models/chicken.obj");
-  let meshes = chicken.getMeshes();
+
+  let object = await Obj.parse(tsgl.getCtx(), "models/Astronaut.obj");
+  let meshes = object.getMeshes();
   console.log(meshes);
-  let entities = meshes.map(mesh => new Entity(tsgl.getCtx(), mesh, new Texture(tsgl.getCtx())));
+  let entities = meshes.map(mesh => new Entity(tsgl.getCtx(), mesh));
   tsgl.addEntity(...entities);
 
   let keysDown = new Set<string>();

@@ -30,8 +30,12 @@ class ObjMesh extends Mesh {
     this.indices.push(this.indices.length);
   }
 
-  public finish() {
+  public async finish(ctx: WebGL2RenderingContext) {
     this.initialize();
+
+    if (this._material.mapKd) {
+      await this._material.mapKd.load(ctx);
+    }
   }
 
   initializeMaterial(): Material {

@@ -1,4 +1,5 @@
 import ShaderProgram from "./webgl/program";
+import Texture from "./webgl/texture";
 
 class Material {
   public name: string = "default";
@@ -11,6 +12,8 @@ class Material {
   public ni: number = 1;
   public d: number = 1;
   public illum: number = 2;
+
+  public mapKd: Texture | null = null;
 
   // TODO: texture maps
 
@@ -45,6 +48,8 @@ class Material {
         case "d": materials[index].d = parseFloat(tokens[1]); break;
         case "illum": materials[index].illum = parseFloat(tokens[1]); break;
 
+        case "map_Kd": materials[index].mapKd = Material.parseTexture(source, tokens[1]); break;
+
         default: console.warn(`[mtl] Ignoring unknown token \`${tokens[0]}\``);
       }
     }
@@ -58,6 +63,12 @@ class Material {
     let b = parseFloat(tokens[3]);
 
     return [r, g, b];
+  }
+
+  public static parseTexture(source: string, texSource: string): Texture {
+    let directory = source.split("/").slice(0, -1).join("/");
+    let materialSource = `${directory}/${texSource}`;
+    return new Texture(undefined, materialSource);
   }
 
   public uploadToShader(program: ShaderProgram) {

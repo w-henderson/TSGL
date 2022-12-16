@@ -14,18 +14,16 @@ class Entity {
   public model: Matrix;
   private mesh: Mesh;
   private shader: ShaderProgram;
-  private texture: Texture;
 
-  constructor(ctx: WebGL2RenderingContext, mesh: Mesh, texture: Texture) {
+  constructor(ctx: WebGL2RenderingContext, mesh: Mesh) {
     this.ctx = ctx;
     this.model = Matrix.squareFromArray([
-      0.02, 0, 0, 0,
-      0, 0.02, 0, 0,
-      0, 0, 0.02, 0,
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
       0, 0, 0, 1
     ]);
     this.mesh = mesh;
-    this.texture = texture;
 
     this.shader = new ShaderProgram(
       this.ctx,
@@ -36,7 +34,7 @@ class Entity {
   }
 
   render(camera: Camera) {
-    this.mesh.render(camera, this.model, this.shader, this.texture);
+    this.mesh.render(camera, this.model, this.shader);
   }
 }
 

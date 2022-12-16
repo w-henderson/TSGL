@@ -42,7 +42,7 @@ abstract class Mesh {
     return new Material();
   }
 
-  public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram, texture: Texture) {
+  public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram) {
     this.ctx.bindVertexArray(this.vertexArrayObj!);
     shader.useProgram();
 
@@ -59,6 +59,9 @@ abstract class Mesh {
 
     let normalMatrix = modelMatrix.invert().transpose3x3();
     normalMatrix.uploadToShader(shader, "normal_matrix");
+
+    let texture = this.material!.mapKd;
+    if (!texture || !texture.isLoaded()) texture = Texture.blank(this.ctx);
 
     texture.bindTexture();
     shader.bindTextureToShader("tex", 0);

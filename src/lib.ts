@@ -18,6 +18,10 @@ class TSGL {
     this.ctx.enable(this.ctx.CULL_FACE);
     this.ctx.cullFace(this.ctx.BACK);
     this.ctx.enable(this.ctx.DEPTH_TEST);
+
+    // fix texture orientation
+    // https://jameshfisher.com/2020/10/22/why-is-my-webgl-texture-upside-down/
+    this.ctx.pixelStorei(this.ctx.UNPACK_FLIP_Y_WEBGL, true);
   }
 
   public addEntity(...entities: Entity[]) {
