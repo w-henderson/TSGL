@@ -36,12 +36,6 @@ class Entity {
   }
 
   render(camera: Camera) {
-    this.mesh.preRender(this.shader);
-
-    this.shader.bindDataToShader("oc_position", this.mesh.getVertexHandle()!, 3);
-    this.shader.bindDataToShader("oc_normal", this.mesh.getNormalHandle()!, 3);
-    this.shader.bindDataToShader("texcoord", this.mesh.getTexHandle()!, 2);
-
     this.mesh.render(camera, this.model, this.shader, this.texture);
   }
 }

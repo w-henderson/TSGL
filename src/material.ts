@@ -1,3 +1,5 @@
+import ShaderProgram from "./webgl/program";
+
 class Material {
   public name: string = "default";
 
@@ -56,6 +58,25 @@ class Material {
     let b = parseFloat(tokens[3]);
 
     return [r, g, b];
+  }
+
+  public uploadToShader(program: ShaderProgram) {
+    let ctx = program.getContext();
+
+    let colours = { ka: this.ka, kd: this.kd, ks: this.ks, ke: this.ke };
+    let floats = { ns: this.ns, ni: this.ni, d: this.d, illum: this.illum };
+
+    for (let key in colours) {
+      let location = ctx.getUniformLocation(program.getHandle()!, key)!;
+      let colour: number[] = (colours as any)[key];
+      ctx.uniform3f(location, colour[0], colour[1], colour[2]);
+    }
+
+    for (let key in floats) {
+      let location = ctx.getUniformLocation(program.getHandle()!, key)!;
+      let value: number = (floats as any)[key];
+      ctx.uniform1f(location, value);
+    }
   }
 }
 

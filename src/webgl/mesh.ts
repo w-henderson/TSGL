@@ -42,13 +42,16 @@ abstract class Mesh {
     return new Material();
   }
 
-  public preRender(shader: ShaderProgram) {
+  public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram, texture: Texture) {
     this.ctx.bindVertexArray(this.vertexArrayObj!);
     shader.useProgram();
-  }
 
-  // useProgram must be called before this function
-  public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram, texture: Texture) {
+    shader.bindDataToShader("oc_position", this.getVertexHandle()!, 3);
+    shader.bindDataToShader("oc_normal", this.getNormalHandle()!, 3);
+    shader.bindDataToShader("texcoord", this.getTexHandle()!, 2);
+
+    this.material!.uploadToShader(shader);
+
     let mvpMatrix = camera.getProjectionMatrix().mul(camera.getViewMatrix()).mul(modelMatrix);
     mvpMatrix.uploadToShader(shader, "mvp_matrix");
     modelMatrix.uploadToShader(shader, "m_matrix");
