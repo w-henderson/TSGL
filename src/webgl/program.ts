@@ -53,7 +53,7 @@ class ShaderProgram {
     this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, arrayBuffer);
     let attributeLocation = this.ctx.getAttribLocation(this.program!, name);
 
-    if (attributeLocation === -1) return;
+    if (attributeLocation === -1) throw Error("invalid attribute location");
 
     this.ctx.vertexAttribPointer(attributeLocation, size, this.ctx.FLOAT, false, 0, 0);
     this.ctx.enableVertexAttribArray(attributeLocation);

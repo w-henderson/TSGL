@@ -35,5 +35,5 @@ void main() {
 
   vec3 linear = ambient + diffuse + specular;
 
-  color = tonemap(linear);
+  color = vec4(0, 0, 0, 1); //tonemap(linear);
 }

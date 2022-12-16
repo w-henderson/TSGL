@@ -7,8 +7,9 @@ import { Vector } from "./matrix";
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
-  let object = await Obj.parse(tsgl.getCtx(), "models/elephant.obj");
-  let meshes = object.getMeshes();
+  let chicken = await Obj.parse(tsgl.getCtx(), "models/chicken.obj");
+  let meshes = chicken.getMeshes();
+  console.log(meshes);
   let entities = meshes.map(mesh => new Entity(tsgl.getCtx(), mesh, new Texture(tsgl.getCtx())));
   tsgl.addEntity(...entities);
 
