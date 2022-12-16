@@ -32,12 +32,23 @@ window.onload = async () => {
   });
 
   const movementSpeed = 0.1;
-  const mouseSensitivity = 0.005;
+  const mouseSensitivity = 0.002;
 
-  window.addEventListener("mousemove", e => {
+  const mouseMoveCallback = (e: MouseEvent) => {
     tsgl.camera.azimuth -= e.movementX * mouseSensitivity;
     tsgl.camera.elevation -= e.movementY * mouseSensitivity;
-  });
+  }
+
+  canvas.onclick = () => canvas.requestPointerLock();
+  document.addEventListener("pointerlockchange", () => {
+    if (document.pointerLockElement === canvas) {
+      console.log("[pointerlockchange] pointer locked")
+      document.addEventListener("mousemove", mouseMoveCallback, false);
+    } else {
+      console.log("[pointerlockchange] pointer unlocked")
+      document.removeEventListener("mousemove", mouseMoveCallback, false);
+    }
+  }, false)
 
   const animation = () => {
     let keysDirection = [
