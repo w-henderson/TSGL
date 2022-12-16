@@ -9,7 +9,7 @@ abstract class Mesh {
   private ctx: WebGL2RenderingContext;
 
   public vertexArrayObj: WebGLVertexArrayObject | null = null;
-  public triangles: number = 0;
+  public indexCount: number = 0;
   public vertexHandle: WebGLBuffer | null = null;
   public normalHandle: WebGLBuffer | null = null;
   public indexHandle: WebGLBuffer | null = null;
@@ -31,7 +31,7 @@ abstract class Mesh {
     let vertexIndices = this.initializeVertexIndices();
     let vertexNormals = this.initializeVertexNormals();
     let textureCoordinates = this.initializeTextureCoordinates();
-    this.triangles = vertexIndices.length;
+    this.indexCount = vertexIndices.length;
 
     this.material = this.initializeMaterial();
 
@@ -42,9 +42,13 @@ abstract class Mesh {
     return new Material();
   }
 
-  public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram, texture: Texture) {
+  public preRender(shader: ShaderProgram) {
+    this.ctx.bindVertexArray(this.vertexArrayObj!);
     shader.useProgram();
+  }
 
+  // useProgram must be called before this function
+  public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram, texture: Texture) {
     let mvpMatrix = camera.getProjectionMatrix().mul(camera.getViewMatrix()).mul(modelMatrix);
     mvpMatrix.uploadToShader(shader, "mvp_matrix");
     modelMatrix.uploadToShader(shader, "m_matrix");
@@ -56,8 +60,7 @@ abstract class Mesh {
     texture.bindTexture();
     shader.bindTextureToShader("tex", 0);
 
-    this.ctx.bindVertexArray(this.vertexArrayObj!);
-    this.ctx.drawElements(this.ctx.TRIANGLES, this.triangles, this.ctx.UNSIGNED_SHORT, 0);
+    this.ctx.drawElements(this.ctx.TRIANGLES, this.indexCount, this.ctx.UNSIGNED_SHORT, 0);
     this.ctx.bindVertexArray(null);
 
     texture.unbindTexture();

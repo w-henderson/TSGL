@@ -19,9 +19,9 @@ class Entity {
   constructor(ctx: WebGL2RenderingContext, mesh: Mesh, texture: Texture) {
     this.ctx = ctx;
     this.model = Matrix.squareFromArray([
-      0.01, 0, 0, 0,
-      0, 0.01, 0, 0,
-      0, 0, 0.01, 0,
+      0.02, 0, 0, 0,
+      0, 0.02, 0, 0,
+      0, 0, 0.02, 0,
       0, 0, 0, 1
     ]);
     this.mesh = mesh;
@@ -33,13 +33,15 @@ class Entity {
       new Shader(this.ctx, this.ctx.FRAGMENT_SHADER, FRAGMENT_SHADER),
       "color"
     );
+  }
+
+  render(camera: Camera) {
+    this.mesh.preRender(this.shader);
 
     this.shader.bindDataToShader("oc_position", this.mesh.getVertexHandle()!, 3);
     this.shader.bindDataToShader("oc_normal", this.mesh.getNormalHandle()!, 3);
     this.shader.bindDataToShader("texcoord", this.mesh.getTexHandle()!, 2);
-  }
 
-  render(camera: Camera) {
     this.mesh.render(camera, this.model, this.shader, this.texture);
   }
 }

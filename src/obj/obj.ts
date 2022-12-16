@@ -51,9 +51,13 @@ class Obj {
       }
     }
 
+    let totalTriangles = 0;
     for (let mesh of obj.meshes) {
       mesh.finish();
+      totalTriangles += mesh.indexCount / 3;
     }
+
+    console.log(`[obj] Loaded \`${source}\` with ${totalTriangles} triangles`)
 
     return obj;
   }
