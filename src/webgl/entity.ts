@@ -3,17 +3,17 @@ import { Matrix } from "../matrix";
 import Mesh from "./mesh";
 import ShaderProgram from "./program";
 import Shader from "./shader";
-import Texture from "./texture";
+
 import Camera from "../camera";
 
 import VERTEX_SHADER from "../shaders/vertex";
 import FRAGMENT_SHADER from "../shaders/fragment";
 
-class Entity {
-  private ctx: WebGL2RenderingContext;
+class WebGLEntity {
+  protected ctx: WebGL2RenderingContext;
   public model: Matrix;
-  private mesh: Mesh;
-  private shader: ShaderProgram;
+  protected mesh: Mesh;
+  protected shader: ShaderProgram;
 
   constructor(ctx: WebGL2RenderingContext, mesh: Mesh) {
     this.ctx = ctx;
@@ -38,4 +38,4 @@ class Entity {
   }
 }
 
-export default Entity;
+export default WebGLEntity;

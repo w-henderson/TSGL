@@ -120,6 +120,53 @@ export class Matrix {
       throw new Error("Not implemented for this matrix type");
     }
   }
+
+  public static identity(): Matrix {
+    return new Matrix(4, 4);
+  }
+
+  public static translate(vector: Vector): Matrix {
+    let result = new Matrix(4, 4);
+    result.data[3] = vector.x;
+    result.data[7] = vector.y;
+    result.data[11] = vector.z;
+    return result;
+  }
+
+  public static scale(vector: Vector): Matrix {
+    let result = new Matrix(4, 4);
+    result.data[0] = vector.x;
+    result.data[5] = vector.y;
+    result.data[10] = vector.z;
+    return result;
+  }
+
+  public static rotateX(angle: number): Matrix {
+    let result = new Matrix(4, 4);
+    result.data[5] = Math.cos(angle);
+    result.data[6] = Math.sin(angle);
+    result.data[9] = -Math.sin(angle);
+    result.data[10] = Math.cos(angle);
+    return result;
+  }
+
+  public static rotateY(angle: number): Matrix {
+    let result = new Matrix(4, 4);
+    result.data[0] = Math.cos(angle);
+    result.data[2] = -Math.sin(angle);
+    result.data[8] = Math.sin(angle);
+    result.data[10] = Math.cos(angle);
+    return result;
+  }
+
+  public static rotateZ(angle: number): Matrix {
+    let result = new Matrix(4, 4);
+    result.data[0] = Math.cos(angle);
+    result.data[1] = Math.sin(angle);
+    result.data[4] = -Math.sin(angle);
+    result.data[5] = Math.cos(angle);
+    return result;
+  }
 }
 
 export class Vector {

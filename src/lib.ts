@@ -1,12 +1,12 @@
 import Camera from "./camera";
-import Entity from "./webgl/entity";
+import WebGLEntity from "./webgl/entity";
 
 class TSGL {
   private canvas: HTMLCanvasElement;
   private ctx: WebGL2RenderingContext;
 
   public camera: Camera;
-  private entities: Entity[];
+  private entities: WebGLEntity[];
 
   public constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -24,7 +24,7 @@ class TSGL {
     this.ctx.pixelStorei(this.ctx.UNPACK_FLIP_Y_WEBGL, true);
   }
 
-  public addEntity(...entities: Entity[]) {
+  public addEntity(...entities: WebGLEntity[]) {
     this.entities.push(...entities);
   }
 

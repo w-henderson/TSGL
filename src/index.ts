@@ -1,8 +1,8 @@
 import TSGL from "./lib";
 import Obj from "./obj/obj";
-import Entity from "./webgl/entity";
 import Texture from "./webgl/texture";
 import { Vector } from "./matrix";
+import Entity from "./entity";
 
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
@@ -11,8 +11,8 @@ window.onload = async () => {
   let object = await Obj.parse(tsgl.getCtx(), "models/Astronaut.obj");
   let meshes = object.getMeshes();
   console.log(meshes);
-  let entities = meshes.map(mesh => new Entity(tsgl.getCtx(), mesh));
-  tsgl.addEntity(...entities);
+  let entity = meshes.map(mesh => new Entity(tsgl.getCtx(), mesh))[0];
+  tsgl.addEntity(entity);
 
   let keysDown = new Set<string>();
 
@@ -64,6 +64,7 @@ window.onload = async () => {
       .add(new Vector(0, 1, 0).scale(keysDirection[2] * movementSpeed));
 
     tsgl.render();
+    entity.rotate(new Vector(0, 0.01, 0));
     window.requestAnimationFrame(animation);
   }
 
