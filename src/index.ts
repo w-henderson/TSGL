@@ -3,16 +3,29 @@ import Obj from "./obj/obj";
 import Texture from "./webgl/texture";
 import { Vector } from "./matrix";
 import Entity from "./entity";
+import Cube from "./webgl/cube";
 
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
 
+  let bigCube = new Entity(tsgl.getCtx(), new Cube(tsgl.getCtx()));
+  bigCube.scale = new Vector(2, 2, 2);
+
+  let littleCube1 = new Entity(tsgl.getCtx(), new Cube(tsgl.getCtx()));
+  let littleCube2 = new Entity(tsgl.getCtx(), new Cube(tsgl.getCtx()));
+  littleCube1.position = new Vector(-4, 0, 0);
+  littleCube2.position = new Vector(4, 0, 0);
+  bigCube.addChild(littleCube1, littleCube2);
+  tsgl.addEntity(bigCube);
+
+  /*
   let object = await Obj.parse(tsgl.getCtx(), "models/Astronaut.obj");
   let meshes = object.getMeshes();
   console.log(meshes);
   let entity = meshes.map(mesh => new Entity(tsgl.getCtx(), mesh))[0];
   tsgl.addEntity(entity);
+  */
 
   let keysDown = new Set<string>();
 
@@ -64,7 +77,7 @@ window.onload = async () => {
       .add(new Vector(0, 1, 0).scale(keysDirection[2] * movementSpeed));
 
     tsgl.render();
-    entity.rotate(new Vector(0, 0.01, 0));
+    bigCube.rotate(new Vector(0, 0.01, 0));
     window.requestAnimationFrame(animation);
   }
 

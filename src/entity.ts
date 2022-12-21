@@ -12,6 +12,8 @@ class Entity extends WebGLEntity {
   private scaleMatrix: Matrix;
   private transformation: Matrix;
 
+  private children: Entity[];
+
   constructor(ctx: WebGL2RenderingContext, mesh: Mesh) {
     super(ctx, mesh);
 
@@ -20,6 +22,8 @@ class Entity extends WebGLEntity {
     this._scale = new Vector(1, 1, 1);
     this.scaleMatrix = Matrix.identity();
     this.transformation = Matrix.identity();
+
+    this.children = [];
   }
 
   public translate(vector: Vector) {
@@ -28,6 +32,10 @@ class Entity extends WebGLEntity {
 
   public rotate(vector: Vector) {
     this.rotation = this.rotation.add(vector);
+  }
+
+  public addChild(...children: Entity[]) {
+    this.children.push(...children);
   }
 
   private recalculateModel() {
@@ -75,8 +83,16 @@ class Entity extends WebGLEntity {
     this.recalculateTransformation();
   }
 
-  render(camera: Camera): void {
-    this.mesh.render(camera, this.transformation, this.shader);
+  render(camera: Camera) {
+    this.renderGraph(camera, Matrix.identity());
+  }
+
+  renderGraph(camera: Camera, parent: Matrix) {
+    this.mesh.render(camera, parent.mul(this.transformation), this.shader);
+
+    for (let child of this.children) {
+      child.renderGraph(camera, parent.mul(this.model));
+    }
   }
 }
 

@@ -4,7 +4,7 @@ import Texture from "./webgl/texture";
 class Material {
   public name: string = "default";
 
-  public ns: number = 0;
+  public ns: number = 32;
   public ka: number[] = [1, 1, 1];
   public kd: number[] = [1, 1, 1];
   public ks: number[] = [1, 1, 1];
