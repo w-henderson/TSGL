@@ -1,14 +1,14 @@
+import TSGL from "../lib";
+
 import Shader from "./shader";
 
 class ShaderProgram {
-  private ctx: WebGL2RenderingContext;
   private vertexShader: Shader;
   private fragmentShader: Shader;
   private output: string;
   private program: WebGLProgram | null;
 
-  constructor(ctx: WebGL2RenderingContext, vertexShader: Shader, fragmentShader: Shader, output: string) {
-    this.ctx = ctx;
+  constructor(vertexShader: Shader, fragmentShader: Shader, output: string) {
     this.vertexShader = vertexShader;
     this.fragmentShader = fragmentShader;
     this.output = output;
@@ -16,19 +16,18 @@ class ShaderProgram {
   }
 
   private createProgram(): WebGLProgram | null {
-    let program = this.ctx.createProgram();
+    let program = TSGL.gl.createProgram();
     if (program === null) return null;
 
-    this.ctx.attachShader(program, this.vertexShader.getHandle()!);
-    this.ctx.attachShader(program, this.fragmentShader.getHandle()!);
-    //this.ctx.bindFragDataLocation(program, 0, this.output);
-    this.ctx.linkProgram(program);
+    TSGL.gl.attachShader(program, this.vertexShader.getHandle()!);
+    TSGL.gl.attachShader(program, this.fragmentShader.getHandle()!);
+    TSGL.gl.linkProgram(program);
 
-    let success = this.ctx.getProgramParameter(program, this.ctx.LINK_STATUS);
+    let success = TSGL.gl.getProgramParameter(program, TSGL.gl.LINK_STATUS);
     if (success) return program;
 
-    console.error(this.ctx.getProgramInfoLog(program));
-    this.ctx.deleteProgram(program);
+    console.error(TSGL.gl.getProgramInfoLog(program));
+    TSGL.gl.deleteProgram(program);
 
     return null;
   }
@@ -37,30 +36,26 @@ class ShaderProgram {
     return this.program;
   }
 
-  public getContext(): WebGL2RenderingContext {
-    return this.ctx;
-  }
-
   public getUniformLocation(name: string): WebGLUniformLocation | null {
-    return this.ctx.getUniformLocation(this.program!, name);
+    return TSGL.gl.getUniformLocation(this.program!, name);
   }
 
   public useProgram() {
-    this.ctx.useProgram(this.program!);
+    TSGL.gl.useProgram(this.program!);
   }
 
   public bindDataToShader(name: string, arrayBuffer: WebGLBuffer, size: number) {
-    this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, arrayBuffer);
-    let attributeLocation = this.ctx.getAttribLocation(this.program!, name);
+    TSGL.gl.bindBuffer(TSGL.gl.ARRAY_BUFFER, arrayBuffer);
+    let attributeLocation = TSGL.gl.getAttribLocation(this.program!, name);
 
     if (attributeLocation === -1) throw Error("invalid attribute location");
 
-    this.ctx.enableVertexAttribArray(attributeLocation);
-    this.ctx.vertexAttribPointer(attributeLocation, size, this.ctx.FLOAT, false, 0, 0);
+    TSGL.gl.enableVertexAttribArray(attributeLocation);
+    TSGL.gl.vertexAttribPointer(attributeLocation, size, TSGL.gl.FLOAT, false, 0, 0);
   }
 
   public bindTextureToShader(sampler: string, texture: number) {
-    this.ctx.uniform1i(this.ctx.getUniformLocation(this.program!, sampler), texture);
+    TSGL.gl.uniform1i(TSGL.gl.getUniformLocation(this.program!, sampler), texture);
   }
 }
 

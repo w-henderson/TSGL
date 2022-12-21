@@ -2,7 +2,6 @@ import ObjMesh from "./mesh";
 import Material from "../material";
 
 class Obj {
-  private ctx: WebGL2RenderingContext;
   private source: string;
 
   private vertices: number[] = [];
@@ -11,8 +10,7 @@ class Obj {
   private meshes: ObjMesh[] = [];
   private materials: Material[] = [];
 
-  constructor(ctx: WebGL2RenderingContext, source: string) {
-    this.ctx = ctx;
+  constructor(source: string) {
     this.source = source;
 
     this.vertices = [];
@@ -26,8 +24,8 @@ class Obj {
     return this.meshes;
   }
 
-  public static async parse(ctx: WebGL2RenderingContext, source: string): Promise<Obj> {
-    let obj = new Obj(ctx, source);
+  public static async parse(source: string): Promise<Obj> {
+    let obj = new Obj(source);
 
     let data = await (await fetch(source)).text();
 
@@ -53,7 +51,7 @@ class Obj {
 
     let totalTriangles = 0;
     for (let mesh of obj.meshes) {
-      await mesh.finish(ctx);
+      await mesh.finish();
       totalTriangles += mesh.indexCount / 3;
     }
 
@@ -95,7 +93,7 @@ class Obj {
     let meshIndex = this.meshes.length - 1;
 
     if (meshIndex === -1) {
-      this.meshes.push(new ObjMesh(this.ctx, new Material()));
+      this.meshes.push(new ObjMesh(new Material()));
       meshIndex = 0;
     }
 
@@ -131,7 +129,7 @@ class Obj {
 
     if (!material) throw new Error("Undefined material");
 
-    this.meshes.push(new ObjMesh(this.ctx, material));
+    this.meshes.push(new ObjMesh(material));
   }
 }
 

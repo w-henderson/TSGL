@@ -1,45 +1,50 @@
 import Camera from "./camera";
-import WebGLEntity from "./webgl/entity";
+import Entity from "./entity";
 
 class TSGL {
   private canvas: HTMLCanvasElement;
-  private ctx: WebGL2RenderingContext;
+  private static ctx: WebGL2RenderingContext;
 
   public camera: Camera;
-  private entities: WebGLEntity[];
+  private entities: Entity[];
 
   public constructor(canvas: HTMLCanvasElement) {
+    TSGL.ctx = canvas.getContext("webgl2")!;
+
     this.canvas = canvas;
-    this.ctx = canvas.getContext("webgl2")!;
     this.camera = new Camera(this.canvas.height / this.canvas.width, 45);
 
     this.entities = [];
 
-    this.ctx.enable(this.ctx.CULL_FACE);
-    this.ctx.cullFace(this.ctx.BACK);
-    this.ctx.enable(this.ctx.DEPTH_TEST);
+    TSGL.ctx.enable(TSGL.ctx.CULL_FACE);
+    TSGL.ctx.cullFace(TSGL.ctx.BACK);
+    TSGL.ctx.enable(TSGL.ctx.DEPTH_TEST);
 
     // fix texture orientation
     // https://jameshfisher.com/2020/10/22/why-is-my-webgl-texture-upside-down/
-    this.ctx.pixelStorei(this.ctx.UNPACK_FLIP_Y_WEBGL, true);
+    TSGL.ctx.pixelStorei(TSGL.ctx.UNPACK_FLIP_Y_WEBGL, true);
   }
 
-  public addEntity(...entities: WebGLEntity[]) {
+  public addEntity(...entities: Entity[]) {
     this.entities.push(...entities);
   }
 
   public render() {
-    this.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.clearColor(1, 1, 1, 1);
-    this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
+    TSGL.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
+    TSGL.ctx.clearColor(1, 1, 1, 1);
+    TSGL.ctx.clear(TSGL.ctx.COLOR_BUFFER_BIT | TSGL.ctx.DEPTH_BUFFER_BIT);
 
     for (let entity of this.entities) {
       entity.render(this.camera);
     }
   }
 
-  public getCtx(): WebGL2RenderingContext {
-    return this.ctx;
+  public static get gl(): WebGL2RenderingContext {
+    if (TSGL.ctx === null) {
+      throw new Error("TSGL context is null");
+    }
+
+    return TSGL.ctx;
   }
 }
 

@@ -14,8 +14,8 @@ class Entity extends WebGLEntity {
 
   private children: Entity[];
 
-  constructor(ctx: WebGL2RenderingContext, mesh: Mesh) {
-    super(ctx, mesh);
+  constructor(mesh: Mesh) {
+    super(mesh);
 
     this._position = new Vector(0, 0, 0);
     this._rotation = new Vector(0, 0, 0);

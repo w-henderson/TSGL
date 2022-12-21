@@ -1,3 +1,5 @@
+import TSGL from "../lib";
+
 import { Matrix } from "../matrix";
 
 import Camera from "../camera";
@@ -6,8 +8,6 @@ import Texture from "./texture";
 import Material from "../material";
 
 abstract class Mesh {
-  private ctx: WebGL2RenderingContext;
-
   public vertexArrayObj: WebGLVertexArrayObject | null = null;
   public indexCount: number = 0;
   public vertexHandle: WebGLBuffer | null = null;
@@ -22,9 +22,7 @@ abstract class Mesh {
   abstract initializeVertexNormals(): number[];
   abstract initializeTextureCoordinates(): number[];
 
-  constructor(ctx: WebGL2RenderingContext) {
-    this.ctx = ctx;
-  }
+  constructor() { }
 
   public initialize() {
     let vertexPositions = this.initializeVertexPositions();
@@ -43,7 +41,7 @@ abstract class Mesh {
   }
 
   public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram) {
-    this.ctx.bindVertexArray(this.vertexArrayObj!);
+    TSGL.gl.bindVertexArray(this.vertexArrayObj!);
     shader.useProgram();
 
     shader.bindDataToShader("oc_position", this.getVertexHandle()!, 3);
@@ -61,36 +59,36 @@ abstract class Mesh {
     normalMatrix.uploadToShader(shader, "normal_matrix");
 
     let texture = this.material!.mapKd;
-    if (!texture || !texture.isLoaded()) texture = Texture.blank(this.ctx);
+    if (!texture || !texture.isLoaded()) texture = Texture.blank();
 
     texture.bindTexture();
     shader.bindTextureToShader("tex", 0);
 
-    this.ctx.drawElements(this.ctx.TRIANGLES, this.indexCount, this.ctx.UNSIGNED_SHORT, 0);
-    this.ctx.bindVertexArray(null);
+    TSGL.gl.drawElements(TSGL.gl.TRIANGLES, this.indexCount, TSGL.gl.UNSIGNED_SHORT, 0);
+    TSGL.gl.bindVertexArray(null);
 
     texture.unbindTexture();
   }
 
   protected loadOntoGPU(vertexPositions: number[], vertexIndices: number[], vertexNormals: number[], textureCoordinates: number[]) {
-    this.vertexArrayObj = this.ctx.createVertexArray();
-    this.ctx.bindVertexArray(this.vertexArrayObj);
+    this.vertexArrayObj = TSGL.gl.createVertexArray();
+    TSGL.gl.bindVertexArray(this.vertexArrayObj);
 
-    this.vertexHandle = this.ctx.createBuffer();
-    this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.vertexHandle);
-    this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(vertexPositions), this.ctx.STATIC_DRAW);
+    this.vertexHandle = TSGL.gl.createBuffer();
+    TSGL.gl.bindBuffer(TSGL.gl.ARRAY_BUFFER, this.vertexHandle);
+    TSGL.gl.bufferData(TSGL.gl.ARRAY_BUFFER, new Float32Array(vertexPositions), TSGL.gl.STATIC_DRAW);
 
-    this.normalHandle = this.ctx.createBuffer();
-    this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.normalHandle);
-    this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(vertexNormals), this.ctx.STATIC_DRAW);
+    this.normalHandle = TSGL.gl.createBuffer();
+    TSGL.gl.bindBuffer(TSGL.gl.ARRAY_BUFFER, this.normalHandle);
+    TSGL.gl.bufferData(TSGL.gl.ARRAY_BUFFER, new Float32Array(vertexNormals), TSGL.gl.STATIC_DRAW);
 
-    this.indexHandle = this.ctx.createBuffer();
-    this.ctx.bindBuffer(this.ctx.ELEMENT_ARRAY_BUFFER, this.indexHandle);
-    this.ctx.bufferData(this.ctx.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), this.ctx.STATIC_DRAW);
+    this.indexHandle = TSGL.gl.createBuffer();
+    TSGL.gl.bindBuffer(TSGL.gl.ELEMENT_ARRAY_BUFFER, this.indexHandle);
+    TSGL.gl.bufferData(TSGL.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), TSGL.gl.STATIC_DRAW);
 
-    this.texHandle = this.ctx.createBuffer();
-    this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.texHandle);
-    this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(textureCoordinates), this.ctx.STATIC_DRAW);
+    this.texHandle = TSGL.gl.createBuffer();
+    TSGL.gl.bindBuffer(TSGL.gl.ARRAY_BUFFER, this.texHandle);
+    TSGL.gl.bufferData(TSGL.gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), TSGL.gl.STATIC_DRAW);
   }
 
   public getVertexHandle(): WebGLBuffer | null {

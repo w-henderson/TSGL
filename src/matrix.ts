@@ -1,3 +1,5 @@
+import TSGL from "./lib";
+
 import ShaderProgram from "./webgl/program";
 
 export class Matrix {
@@ -109,13 +111,12 @@ export class Matrix {
   }
 
   public uploadToShader(program: ShaderProgram, target: string) {
-    let ctx = program.getContext();
-    let location = ctx.getUniformLocation(program.getHandle()!, target)!;
+    let location = TSGL.gl.getUniformLocation(program.getHandle()!, target)!;
 
     if (this.rows === 4 && this.columns === 4) {
-      ctx.uniformMatrix4fv(location, true, this.data);
+      TSGL.gl.uniformMatrix4fv(location, true, this.data);
     } else if (this.rows === 3 && this.columns === 3) {
-      ctx.uniformMatrix3fv(location, true, this.data);
+      TSGL.gl.uniformMatrix3fv(location, true, this.data);
     } else {
       throw new Error("Not implemented for this matrix type");
     }
@@ -214,9 +215,8 @@ export class Vector {
   }
 
   public uploadToShader(program: ShaderProgram, target: string) {
-    let ctx = program.getContext();
-    let location = ctx.getUniformLocation(program.getHandle()!, target)!;
-    ctx.uniform3f(location, this.x, this.y, this.z);
+    let location = TSGL.gl.getUniformLocation(program.getHandle()!, target)!;
+    TSGL.gl.uniform3f(location, this.x, this.y, this.z);
   }
 
   public toString(): string {

@@ -1,8 +1,8 @@
 import Mesh from './mesh';
 
 class Cube extends Mesh {
-  constructor(ctx: WebGL2RenderingContext) {
-    super(ctx);
+  constructor() {
+    super();
     this.initialize();
   }
 

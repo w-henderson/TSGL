@@ -9,11 +9,11 @@ window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
 
-  let bigCube = new Entity(tsgl.getCtx(), new Cube(tsgl.getCtx()));
+  let bigCube = new Entity(new Cube());
   bigCube.scale = new Vector(2, 2, 2);
 
-  let littleCube1 = new Entity(tsgl.getCtx(), new Cube(tsgl.getCtx()));
-  let littleCube2 = new Entity(tsgl.getCtx(), new Cube(tsgl.getCtx()));
+  let littleCube1 = new Entity(new Cube());
+  let littleCube2 = new Entity(new Cube());
   littleCube1.position = new Vector(-4, 0, 0);
   littleCube2.position = new Vector(4, 0, 0);
   bigCube.addChild(littleCube1, littleCube2);

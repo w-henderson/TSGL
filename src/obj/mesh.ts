@@ -10,8 +10,8 @@ class ObjMesh extends Mesh {
 
   private indices: number[];
 
-  constructor(ctx: WebGL2RenderingContext, material: Material) {
-    super(ctx);
+  constructor(material: Material) {
+    super();
 
     this._material = material;
 
@@ -30,11 +30,11 @@ class ObjMesh extends Mesh {
     this.indices.push(this.indices.length);
   }
 
-  public async finish(ctx: WebGL2RenderingContext) {
+  public async finish() {
     this.initialize();
 
     if (this._material.mapKd) {
-      await this._material.mapKd.load(ctx);
+      await this._material.mapKd.load();
     }
   }
 

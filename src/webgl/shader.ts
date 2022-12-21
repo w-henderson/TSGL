@@ -1,9 +1,9 @@
+import TSGL from "../lib";
+
 class Shader {
-  private ctx: WebGL2RenderingContext;
   private shader: WebGLShader | null;
 
-  constructor(ctx: WebGL2RenderingContext, type: number, source: string) {
-    this.ctx = ctx;
+  constructor(type: number, source: string) {
     this.shader = this.createShader(type, source);
   }
 
@@ -12,16 +12,16 @@ class Shader {
   }
 
   private createShader(type: number, source: string): WebGLShader | null {
-    let shader = this.ctx.createShader(type);
+    let shader = TSGL.gl.createShader(type);
     if (shader === null) return null;
-    this.ctx.shaderSource(shader, source);
-    this.ctx.compileShader(shader);
+    TSGL.gl.shaderSource(shader, source);
+    TSGL.gl.compileShader(shader);
 
-    let success = this.ctx.getShaderParameter(shader, this.ctx.COMPILE_STATUS);
+    let success = TSGL.gl.getShaderParameter(shader, TSGL.gl.COMPILE_STATUS);
     if (success) return shader;
 
-    console.error(this.ctx.getShaderInfoLog(shader));
-    this.ctx.deleteShader(shader);
+    console.error(TSGL.gl.getShaderInfoLog(shader));
+    TSGL.gl.deleteShader(shader);
 
     return null;
   }
