@@ -8,14 +8,14 @@ import Texture from "./texture";
 import Material from "../material";
 
 abstract class Mesh {
-  public vertexArrayObj: WebGLVertexArrayObject | null = null;
-  public indexCount: number = 0;
-  public vertexHandle: WebGLBuffer | null = null;
-  public normalHandle: WebGLBuffer | null = null;
-  public indexHandle: WebGLBuffer | null = null;
-  public texHandle: WebGLBuffer | null = null;
+  private vertexArrayObj: WebGLVertexArrayObject | null = null;
+  private indexCount: number = 0;
+  private vertexHandle: WebGLBuffer | null = null;
+  private normalHandle: WebGLBuffer | null = null;
+  private indexHandle: WebGLBuffer | null = null;
+  private texHandle: WebGLBuffer | null = null;
 
-  public material: Material | null = null;
+  private material: Material | null = null;
 
   abstract initializeVertexPositions(): number[];
   abstract initializeVertexIndices(): number[];
@@ -31,22 +31,18 @@ abstract class Mesh {
     let textureCoordinates = this.initializeTextureCoordinates();
     this.indexCount = vertexIndices.length;
 
-    this.material = this.initializeMaterial();
+    this.material = new Material();
 
     this.loadOntoGPU(vertexPositions, vertexIndices, vertexNormals, textureCoordinates);
-  }
-
-  public initializeMaterial(): Material {
-    return new Material();
   }
 
   public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram) {
     TSGL.gl.bindVertexArray(this.vertexArrayObj!);
     shader.useProgram();
 
-    shader.bindDataToShader("oc_position", this.getVertexHandle()!, 3);
-    shader.bindDataToShader("oc_normal", this.getNormalHandle()!, 3);
-    shader.bindDataToShader("texcoord", this.getTexHandle()!, 2);
+    shader.bindDataToShader("oc_position", this.vertexHandle!, 3);
+    shader.bindDataToShader("oc_normal", this.normalHandle!, 3);
+    shader.bindDataToShader("texcoord", this.texHandle!, 2);
 
     this.material!.uploadToShader(shader);
 
@@ -91,16 +87,8 @@ abstract class Mesh {
     TSGL.gl.bufferData(TSGL.gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), TSGL.gl.STATIC_DRAW);
   }
 
-  public getVertexHandle(): WebGLBuffer | null {
-    return this.vertexHandle;
-  }
-
-  public getNormalHandle(): WebGLBuffer | null {
-    return this.normalHandle;
-  }
-
-  public getTexHandle(): WebGLBuffer | null {
-    return this.texHandle;
+  public getIndexCount(): number {
+    return this.indexCount;
   }
 }
 

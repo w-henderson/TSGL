@@ -3,8 +3,12 @@ import { Matrix, Vector } from "./matrix";
 import Mesh from "./webgl/mesh";
 import WebGLEntity from "./webgl/entity";
 import Camera from "./camera";
+import Component, { ComponentContext } from "./component";
 
 class Entity extends WebGLEntity {
+  private static _id = 0;
+  public readonly name: string;
+
   private _position: Vector;
   private _rotation: Vector;
   private _scale: Vector;
@@ -14,8 +18,12 @@ class Entity extends WebGLEntity {
 
   private children: Entity[];
 
-  constructor(mesh: Mesh) {
+  private components: Map<string, Component>;
+
+  constructor(mesh: Mesh, name?: string) {
     super(mesh);
+
+    this.name = name || `Entity${Entity._id++}`;
 
     this._position = new Vector(0, 0, 0);
     this._rotation = new Vector(0, 0, 0);
@@ -24,6 +32,44 @@ class Entity extends WebGLEntity {
     this.transformation = Matrix.identity();
 
     this.children = [];
+    this.components = new Map();
+  }
+
+  public addChild(...children: Entity[]): Entity {
+    this.children.push(...children);
+    return this;
+  }
+
+  public addComponent(...components: Component[]): Entity {
+    for (let component of components) {
+      this.components.set(component.constructor.name, component);
+    }
+    return this;
+  }
+
+  public getComponent<T extends Component>(c: new () => T): T | undefined {
+    return this.components.get(c.name) as T;
+  }
+
+  public getChild(name: string): Entity | undefined {
+    return this.children.find((child) => child.name === name);
+  }
+
+  public getChildren(): Entity[] {
+    return this.children;
+  }
+
+  public invokeComponentMethod(method: keyof Component, ctx: ComponentContext) {
+    for (let child of this.children) {
+      child.invokeComponentMethod(method, {
+        tsgl: ctx.tsgl,
+        entity: child
+      });
+    }
+
+    for (let component of this.components.values()) {
+      if (component[method]) component[method]!(ctx);
+    }
   }
 
   public translate(vector: Vector) {
@@ -32,10 +78,6 @@ class Entity extends WebGLEntity {
 
   public rotate(vector: Vector) {
     this.rotation = this.rotation.add(vector);
-  }
-
-  public addChild(...children: Entity[]) {
-    this.children.push(...children);
   }
 
   private recalculateModel() {
@@ -53,41 +95,41 @@ class Entity extends WebGLEntity {
     this.transformation = this.model.mul(this.scaleMatrix);
   }
 
-  get position(): Vector {
+  public get position(): Vector {
     return this._position;
   }
 
-  get rotation(): Vector {
+  public get rotation(): Vector {
     return this._rotation;
   }
 
-  get scale(): Vector {
+  public get scale(): Vector {
     return this._scale;
   }
 
-  set position(value: Vector) {
+  public set position(value: Vector) {
     this._position = value;
     this.recalculateModel();
     this.recalculateTransformation();
   }
 
-  set rotation(value: Vector) {
+  public set rotation(value: Vector) {
     this._rotation = value;
     this.recalculateModel();
     this.recalculateTransformation();
   }
 
-  set scale(value: Vector) {
+  public set scale(value: Vector) {
     this._scale = value;
     this.recalculateScale();
     this.recalculateTransformation();
   }
 
-  render(camera: Camera) {
+  public render(camera: Camera) {
     this.renderGraph(camera, Matrix.identity());
   }
 
-  renderGraph(camera: Camera, parent: Matrix) {
+  private renderGraph(camera: Camera, parent: Matrix) {
     this.mesh.render(camera, parent.mul(this.transformation), this.shader);
 
     for (let child of this.children) {
