@@ -1,9 +1,6 @@
 import TSGL from "./lib";
-import Obj from "./obj/obj";
-import Texture from "./webgl/texture";
 import { Vector } from "./matrix";
 import Entity from "./entity";
-import Cube from "./webgl/cube";
 import Component, { ComponentContext } from "./component";
 
 class GameManagerComponent implements Component {
@@ -72,7 +69,7 @@ class GameManagerComponent implements Component {
   }
 }
 
-class CubeRotationComponent implements Component {
+class RotationComponent implements Component {
   update(ctx: ComponentContext) {
     ctx.entity.rotate(new Vector(0, 0.01, 0));
   }
@@ -82,18 +79,10 @@ window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
 
-  let bigCube = new Entity(new Cube());
-  bigCube.scale = new Vector(2, 2, 2);
+  let astronaut = await Entity.loadObj("astronaut", "models/Astronaut.obj");
+  astronaut.addComponent(new RotationComponent());
 
-  let littleCube1 = new Entity(new Cube());
-  let littleCube2 = new Entity(new Cube());
-  littleCube1.position = new Vector(-4, 0, 0);
-  littleCube2.position = new Vector(4, 0, 0);
-
-  bigCube.addChild(littleCube1, littleCube2);
-  bigCube.addComponent(new CubeRotationComponent());
-
-  tsgl.root.addChild(bigCube);
+  tsgl.root.addChild(astronaut);
   tsgl.root.addComponent(new GameManagerComponent(canvas));
 
   tsgl.start();

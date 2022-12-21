@@ -4,6 +4,8 @@ import Mesh from "./webgl/mesh";
 import WebGLEntity from "./webgl/entity";
 import Camera from "./camera";
 import Component, { ComponentContext } from "./component";
+import Obj from "./obj/obj";
+import Empty from "./webgl/empty";
 
 class Entity extends WebGLEntity {
   private static _id = 0;
@@ -70,6 +72,14 @@ class Entity extends WebGLEntity {
     for (let component of this.components.values()) {
       if (component[method]) component[method]!(ctx);
     }
+  }
+
+  public static async loadObj(name: string, source: string): Promise<Entity> {
+    let object = await Obj.parse(source);
+    let meshes = object.getMeshes();
+    let entities = meshes.map((mesh, i) => new Entity(mesh, `${name}_${i}`));
+
+    return new Entity(new Empty(), name).addChild(...entities);
   }
 
   public translate(vector: Vector) {

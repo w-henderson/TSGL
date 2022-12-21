@@ -31,9 +31,13 @@ abstract class Mesh {
     let textureCoordinates = this.initializeTextureCoordinates();
     this.indexCount = vertexIndices.length;
 
-    this.material = new Material();
+    this.material = this.initializeMaterial();
 
     this.loadOntoGPU(vertexPositions, vertexIndices, vertexNormals, textureCoordinates);
+  }
+
+  public initializeMaterial(): Material {
+    return new Material();
   }
 
   public render(camera: Camera, modelMatrix: Matrix, shader: ShaderProgram) {

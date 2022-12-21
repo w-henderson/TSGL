@@ -70,7 +70,7 @@ class Material {
   public static parseTexture(source: string, texSource: string): Texture {
     let directory = source.split("/").slice(0, -1).join("/");
     let materialSource = `${directory}/${texSource}`;
-    return new Texture(undefined, materialSource);
+    return new Texture(materialSource);
   }
 
   public uploadToShader(program: ShaderProgram) {
