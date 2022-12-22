@@ -1,4 +1,4 @@
 dist/
 node_modules/
-src/shaders/*.ts
+tsgl/src/shaders/*.ts
 package-lock.json
