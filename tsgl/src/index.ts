@@ -1,22 +1,26 @@
 import Camera from "./camera";
 import Entity from "./entity";
+import Input from "./input";
 
 import Empty from "./webgl/empty";
 
 class TSGL {
   private canvas: HTMLCanvasElement;
   private static ctx: WebGL2RenderingContext;
+  private static frame: number;
 
   public camera: Camera;
   public readonly root: Entity;
+  public readonly input: Input;
 
   public constructor(canvas: HTMLCanvasElement) {
     TSGL.ctx = canvas.getContext("webgl2")!;
+    TSGL.frame = 0;
 
     this.canvas = canvas;
     this.camera = new Camera(this.canvas.height / this.canvas.width, 45);
-
     this.root = new Entity(new Empty(), "root");
+    this.input = new Input(this.canvas);
 
     TSGL.ctx.enable(TSGL.ctx.CULL_FACE);
     TSGL.ctx.cullFace(TSGL.ctx.BACK);
@@ -33,6 +37,8 @@ class TSGL {
       entity: this.root
     });
 
+    this.input.start();
+
     window.requestAnimationFrame(this.update.bind(this));
   }
 
@@ -42,7 +48,11 @@ class TSGL {
       entity: this.root
     });
 
+    this.input.update();
+
     this.render();
+
+    TSGL.frame++;
 
     window.requestAnimationFrame(this.update.bind(this));
   }
@@ -61,6 +71,10 @@ class TSGL {
     }
 
     return TSGL.ctx;
+  }
+
+  public static get currentFrame(): number {
+    return TSGL.frame;
   }
 }
 
