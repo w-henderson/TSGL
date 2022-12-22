@@ -34,8 +34,7 @@ class RotationComponent implements Component {
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
-  tsgl.addLight(new Light(new Vector(4, 4, 4), new Vector(1, 0.3, 0.3)));
-  tsgl.addLight(new Light(new Vector(-4, 4, 4), new Vector(0.3, 0.3, 1)));
+  tsgl.addLight(new Light(new Vector(0, 4, 2), new Vector(1, 1, 1), 4));
 
   let astronaut = await Entity.loadObj("astronaut", "models/Astronaut.obj");
   astronaut.addComponent(new RotationComponent());
