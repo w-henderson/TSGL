@@ -3,16 +3,20 @@ import TSGL from ".";
 import { Vector } from "./matrix";
 
 class Light {
+  private static _id = 0;
   public static readonly MAX_LIGHTS = 4;
+
+  public readonly name: string;
 
   private position: Vector;
   private color: Vector;
   private intensity: number;
 
-  constructor(position: Vector, color?: Vector, intensity?: number) {
+  constructor(position: Vector, color?: Vector, intensity?: number, name?: string) {
     this.position = position;
     this.color = color || new Vector(1, 1, 1);
     this.intensity = intensity || 1;
+    this.name = name || `Light${Light._id++}`;
   }
 
   public static uploadToShader(lights: Light[], shader: WebGLProgram) {

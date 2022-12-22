@@ -44,6 +44,10 @@ class TSGL {
     this.lights.push(...lights);
   }
 
+  public getLight(name: string): Light | undefined {
+    return this.lights.find(light => light.name === name);
+  }
+
   public start() {
     this.root.invokeComponentMethod("start", {
       tsgl: this,
