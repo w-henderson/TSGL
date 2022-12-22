@@ -48,8 +48,8 @@ void main() {
 
     float intensity = 1.0 / (1.0 + length(l) * length(l));
 
-    vec3 diffuse = kd * light_color * intensity * tex_color * max(dot(wc_frag_normal, l), 0.0);
-    vec3 specular = ks * light_color * intensity * pow(max(dot(reflect(-l, wc_frag_normal), v), 0.0), ns);
+    vec3 diffuse = kd * light_color * intensity * tex_color * max(dot(wc_frag_normal, l_hat), 0.0);
+    vec3 specular = ks * light_color * intensity * pow(max(dot(reflect(-l_hat, wc_frag_normal), v), 0.0), ns);
 
     linear += diffuse + specular;
   }
