@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "postinstall": "cd tsgl && npm install && cd ../game && npm install",
-    "build": "cd tsgl && npm run build && cd ../game && npm run build",
+    "build": "npm run build:tsgl && npm run build:game",
+    "build:tsgl": "cd tsgl && npm run build",
+    "build:game": "cd game && npm run build",
     "serve": "humphrey"
   },
   "author": "",
