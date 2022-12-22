@@ -1,4 +1,4 @@
-import TSGL from "../lib";
+import TSGL from "..";
 
 class Texture {
   private source: string | null;

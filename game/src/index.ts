@@ -1,7 +1,8 @@
-import TSGL from "./lib";
-import { Vector } from "./matrix";
-import Entity from "./entity";
-import Component, { ComponentContext } from "./component";
+import TSGL from "tsgl";
+
+import { Vector } from "tsgl/matrix";
+import Entity from "tsgl/entity";
+import Component, { ComponentContext } from "tsgl/component";
 
 class GameManagerComponent implements Component {
   private canvas: HTMLCanvasElement;

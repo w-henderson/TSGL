@@ -1,23 +1,12 @@
 {
-  "name": "tsgl",
+  "name": "game",
   "version": "0.1.0",
   "description": "",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "npm run build:shaders && tsc --project tsconfig.json && npm run bundle:esm && npm run bundle:umd",
-    "build:shaders": "node ./scripts/build-shaders.js",
-    "bundle:esm": "rollup dist/index.js --file dist/index.mjs --format esm",
-    "bundle:umd": "rollup dist/index.js --file dist/index.umd.js --format umd --name sayHello"
+    "postinstall": "cd tsgl && npm install && cd ../game && npm install",
+    "build": "cd tsgl && npm run build && cd ../game && npm run build",
+    "serve": "humphrey"
   },
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "rollup": "^3.7.3",
-    "typescript": "^4.9.4"
-  }
+  "license": "ISC"
 }

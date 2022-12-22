@@ -1,4 +1,4 @@
-import TSGL from "./lib";
+import TSGL from ".";
 
 import ShaderProgram from "./webgl/program";
 

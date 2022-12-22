@@ -1,4 +1,4 @@
-import TSGL from "./lib";
+import TSGL from ".";
 import Entity from "./entity";
 
 export type ComponentContext = {
