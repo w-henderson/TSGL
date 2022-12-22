@@ -7,9 +7,7 @@ import ShaderProgram from "./program";
 import Shader from "./shader";
 
 import Camera from "../camera";
-
-import VERTEX_SHADER from "../shaders/vertex";
-import FRAGMENT_SHADER from "../shaders/fragment";
+import Light from "../light";
 
 class WebGLEntity {
   public model: Matrix;
@@ -25,15 +23,15 @@ class WebGLEntity {
     ]);
     this.mesh = mesh;
 
-    this.shader = new ShaderProgram(
-      new Shader(TSGL.gl.VERTEX_SHADER, VERTEX_SHADER),
-      new Shader(TSGL.gl.FRAGMENT_SHADER, FRAGMENT_SHADER),
-      "color"
-    );
+    this.shader = ShaderProgram.getDefaultProgram();
   }
 
-  render(camera: Camera) {
-    this.mesh.render(camera, this.model, this.shader);
+  render(tsgl: TSGL) {
+    this.shader.useProgram();
+    tsgl.camera.getPosition().uploadToShader(this.shader, "wc_camera_position");
+    Light.uploadToShader(tsgl.lights, this.shader.getHandle()!);
+
+    this.mesh.render(tsgl.camera, this.model, this.shader);
   }
 }
 

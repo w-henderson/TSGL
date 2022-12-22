@@ -1,3 +1,5 @@
+import TSGL from ".";
+
 import { Matrix, Vector } from "./matrix";
 
 import Mesh from "./webgl/mesh";
@@ -6,6 +8,7 @@ import Camera from "./camera";
 import Component, { ComponentContext } from "./component";
 import Obj from "./obj/obj";
 import Empty from "./webgl/empty";
+import Light from "./light";
 
 class Entity extends WebGLEntity {
   private static _id = 0;
@@ -135,8 +138,12 @@ class Entity extends WebGLEntity {
     this.recalculateTransformation();
   }
 
-  public render(camera: Camera) {
-    this.renderGraph(camera, Matrix.identity());
+  public render(tsgl: TSGL) {
+    this.shader.useProgram();
+    tsgl.camera.getPosition().uploadToShader(this.shader, "wc_camera_position");
+    Light.uploadToShader(tsgl.lights, this.shader.getHandle()!);
+
+    this.renderGraph(tsgl.camera, Matrix.identity());
   }
 
   private renderGraph(camera: Camera, parent: Matrix) {

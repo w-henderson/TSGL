@@ -1,12 +1,17 @@
 import TSGL from "..";
 
 import Shader from "./shader";
+import VERTEX_SHADER from "../shaders/vertex";
+import FRAGMENT_SHADER from "../shaders/fragment";
 
 class ShaderProgram {
   private vertexShader: Shader;
   private fragmentShader: Shader;
   private output: string;
   private program: WebGLProgram | null;
+
+  private static defaultProgram: ShaderProgram | null = null;
+  private static boundProgram: ShaderProgram | null = null;
 
   constructor(vertexShader: Shader, fragmentShader: Shader, output: string) {
     this.vertexShader = vertexShader;
@@ -41,7 +46,10 @@ class ShaderProgram {
   }
 
   public useProgram() {
-    TSGL.gl.useProgram(this.program!);
+    if (ShaderProgram.boundProgram !== this) {
+      TSGL.gl.useProgram(this.program!);
+      ShaderProgram.boundProgram = this;
+    }
   }
 
   public bindDataToShader(name: string, arrayBuffer: WebGLBuffer, size: number) {
@@ -56,6 +64,18 @@ class ShaderProgram {
 
   public bindTextureToShader(sampler: string, texture: number) {
     TSGL.gl.uniform1i(TSGL.gl.getUniformLocation(this.program!, sampler), texture);
+  }
+
+  public static getDefaultProgram(): ShaderProgram {
+    if (ShaderProgram.defaultProgram === null) {
+      ShaderProgram.defaultProgram = new ShaderProgram(
+        new Shader(TSGL.gl.VERTEX_SHADER, VERTEX_SHADER),
+        new Shader(TSGL.gl.FRAGMENT_SHADER, FRAGMENT_SHADER),
+        "color"
+      );
+    }
+
+    return ShaderProgram.defaultProgram;
   }
 }
 

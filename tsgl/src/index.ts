@@ -1,4 +1,5 @@
 import Camera from "./camera";
+import Light from "./light";
 import Entity from "./entity";
 import Input from "./input";
 
@@ -10,6 +11,8 @@ class TSGL {
   private static frame: number;
 
   public camera: Camera;
+  public lights: Light[];
+
   public readonly root: Entity;
   public readonly input: Input;
 
@@ -19,6 +22,8 @@ class TSGL {
 
     this.canvas = canvas;
     this.camera = new Camera(this.canvas.height / this.canvas.width, 45);
+    this.lights = [];
+
     this.root = new Entity(new Empty(), "root");
     this.input = new Input(this.canvas);
 
@@ -29,6 +34,14 @@ class TSGL {
     // fix texture orientation
     // https://jameshfisher.com/2020/10/22/why-is-my-webgl-texture-upside-down/
     TSGL.ctx.pixelStorei(TSGL.ctx.UNPACK_FLIP_Y_WEBGL, true);
+  }
+
+  public addLight(...lights: Light[]): void {
+    if (this.lights.length + lights.length > Light.MAX_LIGHTS) {
+      throw new Error(`Too many lights. Max: ${Light.MAX_LIGHTS}`);
+    }
+
+    this.lights.push(...lights);
   }
 
   public start() {
@@ -62,7 +75,7 @@ class TSGL {
     TSGL.ctx.clearColor(1, 1, 1, 1);
     TSGL.ctx.clear(TSGL.ctx.COLOR_BUFFER_BIT | TSGL.ctx.DEPTH_BUFFER_BIT);
 
-    this.root.render(this.camera);
+    this.root.render(this);
   }
 
   public static get gl(): WebGL2RenderingContext {

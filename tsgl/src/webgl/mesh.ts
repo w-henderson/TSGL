@@ -53,7 +53,6 @@ abstract class Mesh {
     let mvpMatrix = camera.getProjectionMatrix().mul(camera.getViewMatrix()).mul(modelMatrix);
     mvpMatrix.uploadToShader(shader, "mvp_matrix");
     modelMatrix.uploadToShader(shader, "m_matrix");
-    camera.getPosition().uploadToShader(shader, "wc_camera_position");
 
     let normalMatrix = modelMatrix.invert().transpose3x3();
     normalMatrix.uploadToShader(shader, "normal_matrix");

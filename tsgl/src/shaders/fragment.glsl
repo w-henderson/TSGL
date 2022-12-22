@@ -20,6 +20,10 @@ uniform float ni;
 uniform float d;
 uniform float illum;
 
+uniform int light_count;
+uniform vec3[4] light_colors;
+uniform vec3[4] wc_light_positions;
+
 vec4 tonemap(vec3 linear) {
   float brightness = 1.2;
   float gamma = 2.2;
@@ -29,19 +33,22 @@ vec4 tonemap(vec3 linear) {
 
 void main() {
   vec3 ambient_color = vec3(0.01, 0.01, 0.01);
-  vec3 wc_light_pos = vec3(3, 4, 8);
-  vec3 light_color = vec3(1, 1, 1);
-
   vec3 tex_color = texture(tex, frag_texcoord).rgb;
+  
+  vec3 linear = ka * ambient_color + ke;
 
-  vec3 l = normalize(wc_light_pos - wc_frag_pos);
   vec3 v = normalize(wc_camera_position - wc_frag_pos);
-  vec3 ambient = ka * ambient_color;
-  vec3 emissive = ke;
-  vec3 diffuse = kd * light_color * tex_color * max(dot(wc_frag_normal, l), 0.0);
-  vec3 specular = ks * light_color * pow(max(dot(reflect(-l, wc_frag_normal), v), 0.0), ns);
 
-  vec3 linear = ambient + diffuse + specular + emissive;
+  for (int i = 0; i < light_count; i++) {
+    vec3 light_color = light_colors[i];
+    vec3 wc_light_pos = wc_light_positions[i];
+
+    vec3 l = normalize(wc_light_pos - wc_frag_pos);
+    vec3 diffuse = kd * light_color * tex_color * max(dot(wc_frag_normal, l), 0.0);
+    vec3 specular = ks * light_color * pow(max(dot(reflect(-l, wc_frag_normal), v), 0.0), ns);
+
+    linear += diffuse + specular;
+  }
 
   color = tonemap(linear);
 }
