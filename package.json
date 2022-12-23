@@ -2,8 +2,11 @@
   "name": "game",
   "version": "0.1.0",
   "description": "",
+  "workspaces": [
+    "tsgl",
+    "game"
+  ],
   "scripts": {
-    "postinstall": "cd tsgl && npm install && cd ../game && npm install",
     "build": "npm run build:tsgl && npm run build:game",
     "build:tsgl": "cd tsgl && npm run build",
     "build:game": "cd game && npm run build",

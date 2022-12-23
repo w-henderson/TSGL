@@ -2,12 +2,24 @@
   "name": "tsgl",
   "version": "0.1.0",
   "description": "",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": {
+      "import": "./dist/*.js",
+      "types": "./dist/*.d.ts"
+    },
+    "./obj/*": {
+      "import": "./dist/obj/*.js",
+      "types": "./dist/obj/*.d.ts"
+    },
+    "./webgl/*": {
+      "import": "./dist/webgl/*.js",
+      "types": "./dist/webgl/*.d.ts"
+    }
+  },
   "scripts": {
     "build": "npm run build:shaders && tsc --project tsconfig.json",
     "build:shaders": "node ./scripts/build-shaders.js"
