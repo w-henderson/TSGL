@@ -17,27 +17,28 @@ class Camera {
     this.elevation = - Math.PI / 4;
   }
 
+  // actual direction vector, the one used for the view matrix is the opposite
   public getDirection(): Vector {
     return new Vector(
       Math.cos(this.azimuth) * Math.cos(this.elevation),
       Math.sin(this.elevation),
       -Math.sin(this.azimuth) * Math.cos(this.elevation)
-    ).scale(-1).normalize();
+    ).normalize();
   }
 
   public getRight(): Vector {
-    return new Vector(0, 1, 0).cross(this.getDirection()).normalize();
+    return new Vector(0, 1, 0).cross(this.getDirection().scale(-1)).normalize();
   }
 
   public getUp(): Vector {
-    return this.getDirection().cross(this.getRight()).normalize();
+    return this.getDirection().scale(-1).cross(this.getRight()).normalize();
   }
 
   public getViewMatrix(): Matrix {
     let c = this.position;
 
     let u = this.getUp();
-    let v = this.getDirection();
+    let v = this.getDirection().scale(-1);
     let r = this.getRight();
 
     return Matrix.squareFromArray([
