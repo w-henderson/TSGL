@@ -22,7 +22,8 @@ uniform float illum;
 
 uniform int light_count;
 uniform vec3[4] light_colors;
-uniform vec3[4] wc_light_positions;
+uniform int[4] light_types;
+uniform vec3[4] light_vectors;
 
 vec4 tonemap(vec3 linear) {
   float brightness = 1.2;
@@ -41,15 +42,27 @@ void main() {
 
   for (int i = 0; i < light_count; i++) {
     vec3 light_color = light_colors[i];
-    vec3 wc_light_pos = wc_light_positions[i];
+    vec3 light_vector = light_vectors[i];
 
-    vec3 l = wc_light_pos - wc_frag_pos;
-    vec3 l_hat = normalize(l);
+    vec3 l; // vector to light
+    float intensity;
 
-    float intensity = 1.0 / (1.0 + length(l) * length(l));
+    if (light_types[i] == 0) {
+      // point light
 
-    vec3 diffuse = kd * light_color * intensity * tex_color * max(dot(wc_frag_normal, l_hat), 0.0);
-    vec3 specular = ks * light_color * intensity * pow(max(dot(reflect(-l_hat, wc_frag_normal), v), 0.0), ns);
+      vec3 l_unnormalized = light_vector - wc_frag_pos;
+      float len = length(l_unnormalized);
+      intensity = 1.0 / (1.0 + len * len);
+      l = normalize(l_unnormalized);
+    } else if (light_types[i] == 1) {
+      // directional light
+
+      intensity = 1.0;
+      l = normalize(-light_vector);
+    }
+
+    vec3 diffuse = kd * light_color * intensity * tex_color * max(dot(wc_frag_normal, l), 0.0);
+    vec3 specular = ks * light_color * intensity * pow(max(dot(reflect(-l, wc_frag_normal), v), 0.0), ns);
 
     linear += diffuse + specular;
   }
