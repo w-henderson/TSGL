@@ -6,6 +6,8 @@ import Component, { ComponentContext } from "tsgl/component";
 import AudioComponent from "tsgl/audio";
 import Light from "tsgl/light";
 
+import { instantiateKart, loadModels } from "./models";
+
 class GameManagerComponent implements Component {
   private movementSpeed = 0.1;
   private mouseSensitivity = 0.002;
@@ -26,26 +28,15 @@ class GameManagerComponent implements Component {
   }
 }
 
-class RotationComponent implements Component {
-  update(ctx: ComponentContext) {
-    ctx.entity.rotate(new Vector(0, 0.01, 0));
-  }
-}
-
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
-  tsgl.addLight(new Light(new Vector(0, 4, 2), new Vector(1, 1, 1), 4));
+  tsgl.addLight(Light.directional(new Vector(0, -4, -2), new Vector(1, 1, 1), 4));
 
-  let astronaut = await Entity.loadObj("astronaut", "assets/models/Astronaut.obj");
-  astronaut.addComponent(new RotationComponent());
-  astronaut.addComponent(new AudioComponent({
-    source: "assets/audio/glubba.ogg",
-    autoplay: true,
-    loop: true
-  }))
+  await loadModels();
 
-  tsgl.root.addChild(astronaut);
+  let kart = instantiateKart();
+  tsgl.root.addChild(kart);
   tsgl.root.addComponent(new GameManagerComponent());
 
   const start = () => {
