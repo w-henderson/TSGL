@@ -34,7 +34,6 @@ export function instantiateKart(name?: string): Entity {
   frontRightWheel.rotation = new Vector(0, Math.PI, 0);
 
   steeringWheel.position = new Vector(-0.64835, 1.11915, 0.0258);
-  steeringWheel.rotation = new Vector(0, 0, -Math.PI / 6);
 
   kart.addChild(chassis, frontLeftWheel, frontRightWheel, steeringWheel);
 

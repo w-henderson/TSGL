@@ -54,6 +54,14 @@ export class Matrix {
     return result;
   }
 
+  public mulVector(vector: Vector): Vector {
+    return new Vector(
+      this.data[0] * vector.x + this.data[1] * vector.y + this.data[2] * vector.z + this.data[3],
+      this.data[4] * vector.x + this.data[5] * vector.y + this.data[6] * vector.z + this.data[7],
+      this.data[8] * vector.x + this.data[9] * vector.y + this.data[10] * vector.z + this.data[11]
+    )
+  }
+
   public add(rhs: Matrix): Matrix {
     if (this.rows !== rhs.rows || this.columns !== rhs.columns) {
       throw new Error("Matrix dimensions must agree");

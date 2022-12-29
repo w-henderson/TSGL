@@ -93,6 +93,26 @@ class Entity extends WebGLEntity {
     this.rotation = this.rotation.add(vector);
   }
 
+  public forward(): Vector {
+    // return a vector in the -z direction
+
+    return new Vector(
+      Math.sin(this.rotation.y),
+      0,
+      -Math.cos(this.rotation.y)
+    );
+  }
+
+  public right(): Vector {
+    // return a vector in the -x direction
+
+    return new Vector(
+      -Math.cos(this.rotation.y),
+      0,
+      -Math.sin(this.rotation.y)
+    );
+  }
+
   private recalculateModel() {
     this.model = Matrix.translate(this.position)
       .mul(Matrix.rotateX(this.rotation.x))

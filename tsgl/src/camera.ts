@@ -17,6 +17,12 @@ class Camera {
     this.elevation = - Math.PI / 4;
   }
 
+  public lookAt(position: Vector) {
+    let direction = position.sub(this.position).normalize();
+    this.azimuth = Math.atan2(-direction.z, direction.x);
+    this.elevation = Math.asin(direction.y);
+  }
+
   // actual direction vector, the one used for the view matrix is the opposite
   public getDirection(): Vector {
     return new Vector(
