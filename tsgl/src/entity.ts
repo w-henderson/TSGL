@@ -45,6 +45,14 @@ class Entity extends WebGLEntity {
     return this;
   }
 
+  public removeChild(...children: Entity[]): Entity {
+    for (let child of children) {
+      let index = this.children.indexOf(child);
+      if (index !== -1) this.children.splice(index, 1);
+    }
+    return this;
+  }
+
   public addComponent(...components: Component[]): Entity {
     for (let component of components) {
       this.components.set(component.constructor.name, component);
@@ -66,6 +74,17 @@ class Entity extends WebGLEntity {
 
   public getChildren(): Entity[] {
     return this.children;
+  }
+
+  public find(name: string): Entity | undefined {
+    if (this.name === name) return this;
+
+    for (let child of this.children) {
+      let result = child.find(name);
+      if (result) return result;
+    }
+
+    return undefined;
   }
 
   public invokeComponentMethod(method: keyof Component, ctx: ComponentContext) {

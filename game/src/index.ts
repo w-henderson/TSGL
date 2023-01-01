@@ -6,20 +6,28 @@ import Entity from "tsgl/entity";
 import Cube from "tsgl/webgl/cube";
 
 import CameraComponent from "./camera";
+import PlayerController from "./player";
+import RoadLoader from "./road";
+
+import { loadModels, MODELS } from "./models";
 
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
-  tsgl.addLight(Light.point(new Vector(4, 6, 4), new Vector(1, 1, 1), 32));
+  tsgl.addLight(Light.directional(new Vector(-1, -3, -1), new Vector(1, 1, 1), 1));
 
-  let bigCube = new Entity(new Cube());
-  let smallCube = new Entity(new Cube());
-  smallCube.scale = new Vector(0.25, 0.25, 0.25);
-  smallCube.position = new Vector(0, 3, 0);
+  await loadModels();
 
-  tsgl.root.addChild(bigCube);
-  tsgl.root.addChild(smallCube);
-  tsgl.root.addComponent(new CameraComponent());
+  let player = new Entity(new Cube(), "player");
+  player.scale = new Vector(0.5, 0.5, 0.5);
+  player.position = new Vector(2.5, 0.5, 0);
+  player.addComponent(new PlayerController());
+  tsgl.root.addChild(player);
+
+  tsgl.camera.azimuth = Math.PI / 2;
+  tsgl.camera.elevation = -0.1;
+
+  tsgl.root.addComponent(new RoadLoader());
 
   const start = () => {
     canvas.removeEventListener("click", start);
