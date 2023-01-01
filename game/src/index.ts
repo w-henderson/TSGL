@@ -2,22 +2,24 @@ import TSGL from "tsgl";
 
 import { Vector } from "tsgl/matrix";
 import Light from "tsgl/light";
+import Entity from "tsgl/entity";
+import Cube from "tsgl/webgl/cube";
 
-import CameraFollowComponent from "./camera";
-import DrivingComponent from "./driving";
-import { instantiateKart, loadModels } from "./models";
+import CameraComponent from "./camera";
 
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
   let tsgl = new TSGL(canvas);
-  tsgl.addLight(Light.directional(new Vector(0, -4, -2), new Vector(1, 1, 1), 4));
+  tsgl.addLight(Light.point(new Vector(4, 6, 4), new Vector(1, 1, 1), 32));
 
-  await loadModels();
+  let bigCube = new Entity(new Cube());
+  let smallCube = new Entity(new Cube());
+  smallCube.scale = new Vector(0.25, 0.25, 0.25);
+  smallCube.position = new Vector(0, 3, 0);
 
-  let kart = instantiateKart("Kart");
-  kart.addComponent(new DrivingComponent());
-  tsgl.root.addChild(kart);
-  tsgl.root.addComponent(new CameraFollowComponent());
+  tsgl.root.addChild(bigCube);
+  tsgl.root.addChild(smallCube);
+  tsgl.root.addComponent(new CameraComponent());
 
   const start = () => {
     canvas.removeEventListener("click", start);

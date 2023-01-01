@@ -56,6 +56,10 @@ class Entity extends WebGLEntity {
     return this.components.get(c.name) as T;
   }
 
+  public getComponents(): Component[] {
+    return Array.from(this.components.values());
+  }
+
   public getChild(name: string): Entity | undefined {
     return this.children.find((child) => child.name === name);
   }

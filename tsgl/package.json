@@ -18,6 +18,10 @@
     "./webgl/*": {
       "import": "./dist/webgl/*.js",
       "types": "./dist/webgl/*.d.ts"
+    },
+    "./physics/*": {
+      "import": "./dist/physics/*.js",
+      "types": "./dist/physics/*.d.ts"
     }
   },
   "scripts": {
