@@ -32,7 +32,6 @@ window.onload = async () => {
   const start = () => {
     canvas.removeEventListener("click", start);
     tsgl.start();
-    (window as any).tsgl = tsgl; // for debugging
   };
 
   canvas.addEventListener("click", start);

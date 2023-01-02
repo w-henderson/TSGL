@@ -34,6 +34,8 @@ class TSGL {
     // fix texture orientation
     // https://jameshfisher.com/2020/10/22/why-is-my-webgl-texture-upside-down/
     TSGL.ctx.pixelStorei(TSGL.ctx.UNPACK_FLIP_Y_WEBGL, true);
+
+    this.update = this.update.bind(this);
   }
 
   public addLight(...lights: Light[]): void {
@@ -56,7 +58,7 @@ class TSGL {
 
     this.input.start();
 
-    window.requestAnimationFrame(this.update.bind(this));
+    window.requestAnimationFrame(this.update);
   }
 
   private update() {
@@ -71,7 +73,7 @@ class TSGL {
 
     TSGL.frame++;
 
-    window.requestAnimationFrame(this.update.bind(this));
+    window.requestAnimationFrame(this.update);
   }
 
   private render() {

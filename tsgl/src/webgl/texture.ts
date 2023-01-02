@@ -3,6 +3,7 @@ import TSGL from "..";
 class Texture {
   private source: string | null;
   private texture: WebGLTexture | null;
+  private static blankTexture: Texture | null = null;
 
   constructor(source?: string, texture?: WebGLTexture) {
     this.source = source || null;
@@ -10,6 +11,8 @@ class Texture {
   }
 
   public static blank(): Texture {
+    if (Texture.blankTexture) return Texture.blankTexture;
+
     let texture = TSGL.gl.createTexture()!;
 
     TSGL.gl.bindTexture(TSGL.gl.TEXTURE_2D, texture);
@@ -18,7 +21,8 @@ class Texture {
     TSGL.gl.texParameteri(TSGL.gl.TEXTURE_2D, TSGL.gl.TEXTURE_MAG_FILTER, TSGL.gl.NEAREST);
     TSGL.gl.bindTexture(TSGL.gl.TEXTURE_2D, null);
 
-    return new Texture(undefined, texture);
+    Texture.blankTexture = new Texture(undefined, texture);
+    return Texture.blankTexture;
   }
 
   public isLoaded(): boolean {
