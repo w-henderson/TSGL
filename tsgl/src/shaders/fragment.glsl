@@ -20,6 +20,9 @@ uniform float ni;
 uniform float d;
 uniform float illum;
 
+uniform float fog_density;
+uniform vec3 fog_color;
+
 uniform int light_count;
 uniform vec3[4] light_colors;
 uniform int[4] light_types;
@@ -38,7 +41,9 @@ void main() {
   
   vec3 linear = ka * ambient_color + ke;
 
-  vec3 v = normalize(wc_camera_position - wc_frag_pos);
+  vec3 v = wc_camera_position - wc_frag_pos;
+  float d = length(v);
+  v = normalize(v);
 
   for (int i = 0; i < light_count; i++) {
     vec3 light_color = light_colors[i];
@@ -68,4 +73,9 @@ void main() {
   }
 
   color = tonemap(linear);
+
+  if (fog_density != 0.0) {
+    float fog_factor = exp2(-fog_density * d);
+    color = mix(vec4(fog_color, 1.0), color, fog_factor);
+  }
 }

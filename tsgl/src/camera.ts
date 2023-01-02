@@ -5,8 +5,13 @@ class Camera {
   public azimuth: number;
   public elevation: number;
 
-  private fov: number;
+  public fov: number;
   private aspect: number;
+
+  public fogDensity: number;
+  public fogColor: Vector;
+
+  public background: Vector;
 
   constructor(aspect: number, fov: number) {
     this.aspect = aspect;
@@ -15,6 +20,11 @@ class Camera {
     this.position = new Vector(3, 3, 3);
     this.azimuth = 3 * Math.PI / 4;
     this.elevation = - Math.PI / 4;
+
+    this.fogDensity = 0;
+    this.fogColor = new Vector(1, 1, 1);
+
+    this.background = new Vector(1, 1, 1);
   }
 
   public lookAt(position: Vector) {

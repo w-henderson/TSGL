@@ -44,24 +44,30 @@ abstract class Mesh {
     TSGL.gl.bindVertexArray(this.vertexArrayObj!);
     shader.useProgram();
 
+    // vertices
     shader.bindDataToShader("oc_position", this.vertexHandle!, 3);
     shader.bindDataToShader("oc_normal", this.normalHandle!, 3);
     shader.bindDataToShader("texcoord", this.texHandle!, 2);
 
+    // material
     this.material!.uploadToShader(shader);
 
+    // matrices
     let mvpMatrix = camera.getProjectionMatrix().mul(camera.getViewMatrix()).mul(modelMatrix);
     mvpMatrix.uploadToShader(shader, "mvp_matrix");
     modelMatrix.uploadToShader(shader, "m_matrix");
-
     let normalMatrix = modelMatrix.invert().transpose3x3();
     normalMatrix.uploadToShader(shader, "normal_matrix");
 
+    // texturing
     let texture = this.material!.mapKd;
     if (!texture || !texture.isLoaded()) texture = Texture.blank();
-
     texture.bindTexture();
     shader.bindTextureToShader("tex", 0);
+
+    // fog
+    shader.uploadFloatToShader("fog_density", camera.fogDensity);
+    camera.fogColor.uploadToShader(shader, "fog_color");
 
     TSGL.gl.drawElements(TSGL.gl.TRIANGLES, this.indexCount, TSGL.gl.UNSIGNED_SHORT, 0);
     TSGL.gl.bindVertexArray(null);

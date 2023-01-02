@@ -21,7 +21,7 @@ class TSGL {
     TSGL.frame = 0;
 
     this.canvas = canvas;
-    this.camera = new Camera(this.canvas.height / this.canvas.width, 45);
+    this.camera = new Camera(this.canvas.height / this.canvas.width, Math.PI / 4);
     this.lights = [];
 
     this.root = new Entity(new Empty(), "root");
@@ -78,7 +78,7 @@ class TSGL {
 
   private render() {
     TSGL.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
-    TSGL.ctx.clearColor(1, 1, 1, 1);
+    TSGL.ctx.clearColor(this.camera.background.x, this.camera.background.y, this.camera.background.z, 1);
     TSGL.ctx.clear(TSGL.ctx.COLOR_BUFFER_BIT | TSGL.ctx.DEPTH_BUFFER_BIT);
 
     this.root.render(this);

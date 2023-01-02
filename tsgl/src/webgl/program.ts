@@ -66,6 +66,10 @@ class ShaderProgram {
     TSGL.gl.uniform1i(TSGL.gl.getUniformLocation(this.program!, sampler), texture);
   }
 
+  public uploadFloatToShader(name: string, value: number) {
+    TSGL.gl.uniform1f(TSGL.gl.getUniformLocation(this.program!, name), value);
+  }
+
   public static getDefaultProgram(): ShaderProgram {
     if (ShaderProgram.defaultProgram === null) {
       ShaderProgram.defaultProgram = new ShaderProgram(
