@@ -7,6 +7,7 @@ import { MODELS } from "./models";
 
 type ObstacleTemplate = {
   model: string,
+  spawnChance: number,
   minSpawnX: number,
   maxSpawnX: number,
   continuous: boolean,
@@ -17,6 +18,7 @@ type ObstacleTemplate = {
 const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
   {
     model: "assets/models/car.obj",
+    spawnChance: 1,
     minSpawnX: 2,
     maxSpawnX: 3,
     continuous: true,
@@ -25,6 +27,7 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
   },
   {
     model: "assets/models/lorry.obj",
+    spawnChance: 1,
     minSpawnX: 2.1,
     maxSpawnX: 2.9,
     continuous: true,
@@ -33,6 +36,7 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
   },
   {
     model: "assets/models/cones.obj",
+    spawnChance: 1.5,
     minSpawnX: 2.05,
     maxSpawnX: 2.95,
     continuous: false,
@@ -41,6 +45,7 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
   },
   {
     model: "assets/models/barrier.obj",
+    spawnChance: 0.35,
     minSpawnX: 2.5,
     maxSpawnX: 2.5,
     continuous: false,
@@ -48,6 +53,8 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
     colliderSize: new Vector(1.8, 0.05, 0.05)
   }
 ]
+
+const OBSTACLE_TOTAL_SPAWN_CHANCE = OBSTACLE_TEMPLATES.reduce((total, template) => total + template.spawnChance, 0);
 
 class ObstacleManager implements Component {
   private count = 0;
@@ -74,7 +81,7 @@ class ObstacleManager implements Component {
     while (this.obstacleQueue.length < this.obstacleBufferLength) {
       let lastObstacleLocation = this.obstacleQueue.length > 0 ? this.obstacleQueue[this.obstacleQueue.length - 1].position.z : -this.graceDistance;
       let newObstacleLocation = lastObstacleLocation - this.obstacleGap;
-      let template = OBSTACLE_TEMPLATES[Math.floor(Math.random() * OBSTACLE_TEMPLATES.length)];
+      let template = this.chooseObstacle();
       let obstacle = this.instantiateObstacle(template, newObstacleLocation);
 
       ctx.tsgl.root.addChild(obstacle);
@@ -92,6 +99,21 @@ class ObstacleManager implements Component {
     }
 
     return false;
+  }
+
+  private chooseObstacle(): ObstacleTemplate {
+    let rand = Math.random() * OBSTACLE_TOTAL_SPAWN_CHANCE;
+    let total = 0;
+
+    for (let template of OBSTACLE_TEMPLATES) {
+      total += template.spawnChance;
+
+      if (rand < total) {
+        return template;
+      }
+    }
+
+    return OBSTACLE_TEMPLATES[OBSTACLE_TEMPLATES.length - 1];
   }
 
   private instantiateObstacle(template: ObstacleTemplate, z: number): Entity {
