@@ -19,20 +19,21 @@ window.onload = async () => {
   await loadModels();
 
   let player = new Entity(new Cube(), "player");
-  player.scale = new Vector(0.5, 0.5, 0.5);
-  player.position = new Vector(2.5, 0.5, 0);
+  player.scale = new Vector(0.1, 0.25, 0.1);
+  player.position = new Vector(2.5, 0.25, 0);
   player.addComponent(new PlayerController());
   tsgl.root.addChild(player);
 
   tsgl.camera.azimuth = Math.PI / 2;
   tsgl.camera.elevation = -0.1;
+  tsgl.camera.fov = Math.PI / 3;
+  tsgl.camera.fogDensity = 0.06;
+  tsgl.camera.fogColor = new Vector(0.75, 1, 1);
+  tsgl.camera.background = new Vector(0.75, 1, 1);
 
   tsgl.root.addComponent(new RoadLoader());
 
-  const start = () => {
-    canvas.removeEventListener("click", start);
-    tsgl.start();
-  };
+  (window as any).tsgl = tsgl; // for debugging
 
-  canvas.addEventListener("click", start);
+  tsgl.start();
 }

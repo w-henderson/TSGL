@@ -27,7 +27,7 @@ class RoadLoader implements Component {
   update(ctx: ComponentContext) {
     let road = this.roads[this.count % this.roadBufferLength];
 
-    if (road.position.z > (this.player!.position.z + 50)) {
+    if (road.position.z > (this.player!.position.z + 60)) {
       road.position = road.position.add(new Vector(0, 0, -50 * this.roadBufferLength));
       this.count++;
     }
