@@ -91,7 +91,8 @@ class Entity extends WebGLEntity {
     for (let child of this.children) {
       child.invokeComponentMethod(method, {
         tsgl: ctx.tsgl,
-        entity: child
+        entity: child,
+        deltaTime: ctx.deltaTime,
       });
     }
 

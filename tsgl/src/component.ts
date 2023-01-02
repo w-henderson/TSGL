@@ -2,8 +2,20 @@ import TSGL from ".";
 import Entity from "./entity";
 
 export type ComponentContext = {
+  /**
+   * The TSGL instance.
+   */
   tsgl: TSGL;
+
+  /**
+   * The entity that the component is attached to.
+   */
   entity: Entity;
+
+  /**
+   * The time in seconds since the last frame was rendered.
+   */
+  deltaTime: number;
 }
 
 interface Component {

@@ -9,6 +9,7 @@ class TSGL {
   private canvas: HTMLCanvasElement;
   private static ctx: WebGL2RenderingContext;
   private static frame: number;
+  private lastFrameTimestamp: number;
 
   public camera: Camera;
   public lights: Light[];
@@ -26,6 +27,8 @@ class TSGL {
 
     this.root = new Entity(new Empty(), "root");
     this.input = new Input(this.canvas);
+
+    this.lastFrameTimestamp = performance.now();
 
     TSGL.ctx.enable(TSGL.ctx.CULL_FACE);
     TSGL.ctx.cullFace(TSGL.ctx.BACK);
@@ -53,18 +56,25 @@ class TSGL {
   public start() {
     this.root.invokeComponentMethod("start", {
       tsgl: this,
-      entity: this.root
+      entity: this.root,
+      deltaTime: 0
     });
 
     this.input.start();
 
+    this.lastFrameTimestamp = performance.now();
+
     window.requestAnimationFrame(this.update);
   }
 
-  private update() {
+  private update(elapsed: number) {
+    let deltaTime = (elapsed - this.lastFrameTimestamp) / 1000;
+    this.lastFrameTimestamp = elapsed;
+
     this.root.invokeComponentMethod("update", {
       tsgl: this,
-      entity: this.root
+      entity: this.root,
+      deltaTime
     });
 
     this.input.update();

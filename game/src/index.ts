@@ -6,12 +6,11 @@ import Entity from "tsgl/entity";
 import Cube from "tsgl/webgl/cube";
 import BoxCollider from "tsgl/physics/boxcollider";
 
-import CameraComponent from "./camera";
 import PlayerController from "./player";
 import RoadLoader from "./road";
 import ObstacleManager from "./obstacles";
 
-import { loadModels, MODELS } from "./models";
+import { loadModels } from "./models";
 
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;

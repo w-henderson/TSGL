@@ -8,8 +8,8 @@ class PlayerController implements Component {
   private obstacleManager: ObstacleManager | null = null;
   private playerCollider: BoxCollider | null = null;
 
-  private movementSpeed = 0.1;
-  private mouseSensitivity = 0.0025;
+  private movementSpeed = 6;
+  private mouseSensitivity = 0.15;
 
   private minX = 1.75;
   private maxX = 3.25;
@@ -21,12 +21,12 @@ class PlayerController implements Component {
 
   update(ctx: ComponentContext): void {
     let { x } = ctx.tsgl.input.getMouseDelta();
-    let newX = ctx.entity.position.x + x * this.mouseSensitivity;
+    let newX = ctx.entity.position.x + x * this.mouseSensitivity * ctx.deltaTime;
 
     if (newX < this.minX) newX = this.minX;
     if (newX > this.maxX) newX = this.maxX;
 
-    ctx.entity.position = new Vector(newX, ctx.entity.position.y, ctx.entity.position.z - this.movementSpeed);
+    ctx.entity.position = new Vector(newX, ctx.entity.position.y, ctx.entity.position.z - this.movementSpeed * ctx.deltaTime);
     ctx.tsgl.camera.position = ctx.entity.position.add(new Vector(0, 0.5, 2));
 
     if (this.obstacleManager!.checkCollision(this.playerCollider!)) {
