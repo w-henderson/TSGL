@@ -1,6 +1,7 @@
-import Collider, { SphereCollider } from "../collider";
-import { Vector } from "../../matrix";
-import { ComponentContext } from "../../component";
+import Collider from "./collider";
+import SphereCollider from "./spherecollider";
+import { Vector } from "../matrix";
+import { ComponentContext } from "../component";
 
 class BoxCollider extends Collider {
   private minX: number = -1;

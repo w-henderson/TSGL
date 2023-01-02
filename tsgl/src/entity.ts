@@ -60,7 +60,7 @@ class Entity extends WebGLEntity {
     return this;
   }
 
-  public getComponent<T extends Component>(c: new () => T): T | undefined {
+  public getComponent<T extends Component>(c: new (...args: any[]) => T): T | undefined {
     return this.components.get(c.name) as T;
   }
 

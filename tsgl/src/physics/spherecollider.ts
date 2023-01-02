@@ -1,6 +1,6 @@
-import Collider from "../collider";
-import { Vector } from "../../matrix";
-import { ComponentContext } from "../../component";
+import Collider from "./collider";
+import { Vector } from "../matrix";
+import { ComponentContext } from "../component";
 
 class SphereCollider extends Collider {
   public relativeCenter: Vector; // relative

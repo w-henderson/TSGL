@@ -1,9 +1,5 @@
 import Component, { ComponentContext } from "../component";
-import Entity from "../entity";
 import { Vector } from "../matrix";
-
-import BoxCollider from "./colliders/box";
-import SphereCollider from "./colliders/sphere";
 
 abstract class Collider implements Component {
   public abstract containsPoint(point: Vector): boolean;
@@ -14,4 +10,3 @@ abstract class Collider implements Component {
 }
 
 export default Collider;
-export { BoxCollider, SphereCollider };
