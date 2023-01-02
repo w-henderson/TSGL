@@ -4,7 +4,11 @@ import Empty from "tsgl/webgl/empty";
 
 const sources = [
   "assets/models/bridge.obj",
-  "assets/models/road.obj"
+  "assets/models/road.obj",
+  "assets/models/car.obj",
+  "assets/models/lorry.obj",
+  "assets/models/cones.obj",
+  "assets/models/barrier.obj"
 ];
 
 export const MODELS = new Map<string, (name: string) => Entity>();

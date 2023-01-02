@@ -4,10 +4,12 @@ import { Vector } from "tsgl/matrix";
 import Light from "tsgl/light";
 import Entity from "tsgl/entity";
 import Cube from "tsgl/webgl/cube";
+import BoxCollider from "tsgl/physics/boxcollider";
 
 import CameraComponent from "./camera";
 import PlayerController from "./player";
 import RoadLoader from "./road";
+import ObstacleManager from "./obstacles";
 
 import { loadModels, MODELS } from "./models";
 
@@ -19,9 +21,10 @@ window.onload = async () => {
   await loadModels();
 
   let player = new Entity(new Cube(), "player");
+  player.addComponent(new BoxCollider(new Vector(0, 0, 0), new Vector(2, 2, 2)));
+  player.addComponent(new PlayerController());
   player.scale = new Vector(0.1, 0.25, 0.1);
   player.position = new Vector(2.5, 0.25, 0);
-  player.addComponent(new PlayerController());
   tsgl.root.addChild(player);
 
   tsgl.camera.azimuth = Math.PI / 2;
@@ -32,6 +35,7 @@ window.onload = async () => {
   tsgl.camera.background = new Vector(0.75, 1, 1);
 
   tsgl.root.addComponent(new RoadLoader());
+  tsgl.root.addComponent(new ObstacleManager());
 
   (window as any).tsgl = tsgl; // for debugging
 
