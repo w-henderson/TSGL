@@ -4,6 +4,10 @@ import { Vector } from "tsgl/matrix";
 
 const ANIMATIONS = {
   run: {
+    player: {
+      from: [0, 0, 0],
+      to: [0, 0, 0],
+    },
     leftArmPivot: {
       from: [-Math.PI / 4, 0, 0],
       to: [Math.PI / 4, 0, 0],
@@ -20,22 +24,54 @@ const ANIMATIONS = {
       from: [-Math.PI / 4, 0, 0],
       to: [Math.PI / 4, 0, 0],
     }
+  },
+  slide: {
+    player: {
+      from: [0, 0, 0],
+      to: [Math.PI / 2, 0, 0],
+    },
+    headPivot: {
+      from: [0, 0, 0],
+      to: [-Math.PI / 4, 0, 0]
+    },
+    leftArmPivot: {
+      from: [0, 0, 0],
+      to: [0, 0, 0],
+    },
+    rightArmPivot: {
+      from: [0, 0, 0],
+      to: [0, 0, 0],
+    },
+    leftLegPivot: {
+      from: [0, 0, 0],
+      to: [0, 0, 0],
+    },
+    rightLegPivot: {
+      from: [0, 0, 0],
+      to: [0, 0, 0],
+    }
   }
 }
 
 class PlayerAnimation implements Component {
   private animation: keyof typeof ANIMATIONS = "run";
   private animationTime = 0;
-  private animationSpeed = 2;
+  public animationSpeed = 2;
 
   private cachedEntities: Map<string, Entity> = new Map();
 
+  public playAnimation(name: keyof typeof ANIMATIONS, speed: number = 2) {
+    this.animation = name;
+    this.animationTime = 0;
+    this.animationSpeed = speed;
+  }
+
   update(ctx: ComponentContext) {
-    let animation = ANIMATIONS[this.animation];
+    let animation: any = ANIMATIONS[this.animation];
 
-    let a = 0.5 + 0.5 * Math.sin(this.animationTime * Math.PI * 2);
+    let a = 0.5 - 0.5 * Math.cos(this.animationTime * Math.PI * 2);
 
-    for (let entityName of (Object.keys(animation) as (keyof typeof animation)[])) {
+    for (let entityName of Object.keys(animation)) {
       if (!this.cachedEntities.has(entityName)) {
         this.cachedEntities.set(entityName, ctx.entity.find(entityName)!);
       }

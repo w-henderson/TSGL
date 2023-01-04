@@ -11,8 +11,8 @@ class BoxCollider extends Collider {
   private minZ: number = -1;
   private maxZ: number = -1;
 
-  private center: Vector; // relative
-  private size: Vector;   // relative
+  public center: Vector; // relative
+  public size: Vector;   // relative
 
   constructor(center: Vector, size: Vector) {
     super();
