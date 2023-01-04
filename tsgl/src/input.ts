@@ -64,7 +64,9 @@ class Input {
   }
 
   public start() {
-    this.canvas.addEventListener("click", () => this.canvas.requestPointerLock());
+    this.canvas.addEventListener("click", () => {
+      if (document.pointerLockElement !== this.canvas) this.canvas.requestPointerLock();
+    });
 
     document.addEventListener("keydown", this.onKeyDown);
     document.addEventListener("keyup", this.onKeyUp);
