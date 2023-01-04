@@ -2,11 +2,10 @@ import TSGL from "tsgl";
 
 import { Vector } from "tsgl/matrix";
 import Light from "tsgl/light";
-import Entity from "tsgl/entity";
-import Cube from "tsgl/webgl/cube";
 import BoxCollider from "tsgl/physics/boxcollider";
 
 import PlayerController from "./player";
+import PlayerAnimation from "./animation";
 import RoadLoader from "./road";
 import ObstacleManager from "./obstacles";
 
@@ -22,6 +21,7 @@ window.onload = async () => {
   let player = playerModel();
   player.addComponent(new BoxCollider(new Vector(0, 0, 0), new Vector(0.25, 1, 0.1)));
   player.addComponent(new PlayerController());
+  player.addComponent(new PlayerAnimation());
   player.position = new Vector(2.5, 0.3125, 0);
   tsgl.root.addChild(player);
 

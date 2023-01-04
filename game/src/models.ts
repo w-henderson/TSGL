@@ -39,18 +39,18 @@ export function playerModel(): Entity {
 
   let body = new Entity(new Cube(), "body");
 
-  let headPivot = new Entity(new Empty(), "head_pivot");
+  let headPivot = new Entity(new Empty(), "headPivot");
   let head = new Entity(new Cube(), "head");
 
-  let leftArmPivot = new Entity(new Empty(), "left_arm_pivot");
-  let leftArm = new Entity(new Cube(), "left_arm");
-  let rightArmPivot = new Entity(new Empty(), "right_arm_pivot");
-  let rightArm = new Entity(new Cube(), "right_arm");
+  let leftArmPivot = new Entity(new Empty(), "leftArmPivot");
+  let leftArm = new Entity(new Cube(), "leftArm");
+  let rightArmPivot = new Entity(new Empty(), "rightArmPivot");
+  let rightArm = new Entity(new Cube(), "rightArm");
 
-  let leftLegPivot = new Entity(new Empty(), "left_leg_pivot");
-  let leftLeg = new Entity(new Cube(), "left_leg");
-  let rightLegPivot = new Entity(new Empty(), "right_leg_pivot");
-  let rightLeg = new Entity(new Cube(), "right_leg");
+  let leftLegPivot = new Entity(new Empty(), "leftLegPivot");
+  let leftLeg = new Entity(new Cube(), "leftLeg");
+  let rightLegPivot = new Entity(new Empty(), "rightLegPivot");
+  let rightLeg = new Entity(new Cube(), "rightLeg");
 
   body.scale = new Vector(1, 2, 0.5).scale(scalingFactor * 0.5);
   head.scale = new Vector(1, 1, 1).scale(scalingFactor * 0.5);
