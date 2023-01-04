@@ -9,6 +9,7 @@ import Component, { ComponentContext } from "./component";
 import Obj from "./obj/obj";
 import Empty from "./webgl/empty";
 import Light from "./light";
+import Material from "./material";
 
 class Entity extends WebGLEntity {
   private static _id = 0;
@@ -66,6 +67,10 @@ class Entity extends WebGLEntity {
 
   public getComponents(): Component[] {
     return Array.from(this.components.values());
+  }
+
+  public getMaterial(): Material {
+    return this.mesh.getMaterial();
   }
 
   public getChild(name: string): Entity | undefined {

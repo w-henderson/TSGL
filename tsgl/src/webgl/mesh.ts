@@ -99,6 +99,12 @@ abstract class Mesh {
   public getIndexCount(): number {
     return this.indexCount;
   }
+
+  public getMaterial(): Material {
+    if (!this.material) throw new Error("Material not initialized");
+
+    return this.material;
+  }
 }
 
 export default Mesh;

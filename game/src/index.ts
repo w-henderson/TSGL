@@ -10,7 +10,7 @@ import PlayerController from "./player";
 import RoadLoader from "./road";
 import ObstacleManager from "./obstacles";
 
-import { loadModels } from "./models";
+import { loadModels, playerModel } from "./models";
 
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
@@ -19,11 +19,10 @@ window.onload = async () => {
 
   await loadModels();
 
-  let player = new Entity(new Cube(), "player");
-  player.addComponent(new BoxCollider(new Vector(0, 0, 0), new Vector(2, 2, 2)));
+  let player = playerModel();
+  player.addComponent(new BoxCollider(new Vector(0, 0, 0), new Vector(0.25, 1, 0.1)));
   player.addComponent(new PlayerController());
-  player.scale = new Vector(0.1, 0.25, 0.1);
-  player.position = new Vector(2.5, 0.25, 0);
+  player.position = new Vector(2.5, 0.3125, 0);
   tsgl.root.addChild(player);
 
   tsgl.camera.azimuth = Math.PI / 2;
