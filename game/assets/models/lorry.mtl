@@ -1,7 +1,7 @@
 # Blender 3.4.1 MTL File: 'None'
 # www.blender.org
 
-newmtl Material
+newmtl Material.001
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -31,7 +31,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl [0089_PaleTurquoise]
+newmtl [0089_PaleTurquoise].001
 Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.436813 0.859174 0.859174
@@ -51,7 +51,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl [0136_Charcoal]
+newmtl [0136_Charcoal].001
 Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.012664 0.012664 0.012664
