@@ -16,6 +16,7 @@ class PlayerController implements Component {
   private animation: PlayerAnimation | null = null;
 
   private movementSpeed = 6;
+  private acceleration = 0.08;
   private mouseSensitivity = 0.15;
 
   private minX = 1.75;
@@ -50,10 +51,16 @@ class PlayerController implements Component {
       this.playerCollider!.size = new Vector(0.25, 0.1, 0.1);
     }
 
+    let x = this.inputManager!.getMovement();
+    let newX = ctx.entity.position.x + x * this.mouseSensitivity * ctx.deltaTime;
+
+    if (newX < this.minX) newX = this.minX;
+    if (newX > this.maxX) newX = this.maxX;
+
     switch (this.specialMovement) {
       case "jump": {
         ctx.entity.position = new Vector(
-          ctx.entity.position.x,
+          newX,
           0.3125 + Math.sin(this.specialMovementTime * Math.PI) * this.jumpHeight,
           ctx.entity.position.z - this.movementSpeed * ctx.deltaTime
         );
@@ -71,7 +78,7 @@ class PlayerController implements Component {
 
         if (this.specialMovementTime < this.slideDownAmount) {
           ctx.entity.position = new Vector(
-            ctx.entity.position.x,
+            newX,
             0.3125 - Math.sin((this.specialMovementTime / this.slideDownAmount) * (Math.PI / 2)) * (0.3125 - yHeight),
             ctx.entity.position.z - this.movementSpeed * ctx.deltaTime
           );
@@ -82,13 +89,13 @@ class PlayerController implements Component {
           this.animation!.animationSpeed = 1 / (this.slideDownAmount * this.slideDuration * 2);
 
           ctx.entity.position = new Vector(
-            ctx.entity.position.x,
+            newX,
             0.3125 - Math.sin(((1 - this.specialMovementTime) / this.slideDownAmount) * (Math.PI / 2)) * (0.3125 - yHeight),
             ctx.entity.position.z - this.movementSpeed * ctx.deltaTime
           );
 
           ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, new Vector(
-            ctx.entity.position.x,
+            newX,
             0.8125,
             ctx.entity.position.z + 2
           ), 0.2);
@@ -97,7 +104,7 @@ class PlayerController implements Component {
           this.animation!.animationSpeed = 0;
 
           ctx.entity.position = new Vector(
-            ctx.entity.position.x,
+            newX,
             ctx.entity.position.y,
             ctx.entity.position.z - this.movementSpeed * ctx.deltaTime
           );
@@ -112,12 +119,6 @@ class PlayerController implements Component {
       }
 
       default: {
-        let x = this.inputManager!.getMovement();
-        let newX = ctx.entity.position.x + x * this.mouseSensitivity * ctx.deltaTime;
-
-        if (newX < this.minX) newX = this.minX;
-        if (newX > this.maxX) newX = this.maxX;
-
         ctx.entity.position = new Vector(newX, 0.3125, ctx.entity.position.z - this.movementSpeed * ctx.deltaTime);
 
         ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 0.5, 2)), 0.2);
@@ -135,6 +136,8 @@ class PlayerController implements Component {
       if (this.animation!.animationSpeed == 0.5) this.animation!.animationSpeed = 2;
       else this.animation!.playAnimation("run", 2);
     }
+
+    this.movementSpeed += this.acceleration * ctx.deltaTime;
 
     if (this.obstacleManager!.checkCollision(this.playerCollider!)) {
       this.animation!.stopAnimation();

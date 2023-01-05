@@ -11,6 +11,7 @@ type ObstacleTemplate = {
   minSpawnX: number,
   maxSpawnX: number,
   continuous: boolean,
+  repeatable: boolean,
   colliderCenter: Vector,
   colliderSize: Vector
 }
@@ -22,6 +23,7 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
     minSpawnX: 2,
     maxSpawnX: 3,
     continuous: true,
+    repeatable: true,
     colliderCenter: new Vector(0, 0.5, -0.877),
     colliderSize: new Vector(0.74, 1, 1.76)
   },
@@ -31,6 +33,7 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
     minSpawnX: 2.1,
     maxSpawnX: 2.9,
     continuous: true,
+    repeatable: true,
     colliderCenter: new Vector(0, 0.55, -1.242),
     colliderSize: new Vector(0.87, 1.1, 2.48)
   },
@@ -40,6 +43,7 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
     minSpawnX: 2.05,
     maxSpawnX: 2.95,
     continuous: false,
+    repeatable: true,
     colliderCenter: new Vector(0, 0.09, 0),
     colliderSize: new Vector(0.855, 0.18, 0.23)
   },
@@ -49,6 +53,7 @@ const OBSTACLE_TEMPLATES: ObstacleTemplate[] = [
     minSpawnX: 2.5,
     maxSpawnX: 2.5,
     continuous: false,
+    repeatable: false,
     colliderCenter: new Vector(0, 0.35, 0),
     colliderSize: new Vector(1.8, 0.05, 0.05)
   }
@@ -62,6 +67,7 @@ class ObstacleManager implements Component {
   private obstacleBufferLength = 10;
   private graceDistance = 25;
   private obstacleQueue: Entity[] = [];
+  private lastObstacleName = "";
 
   private player: Entity | null = null;
 
@@ -82,10 +88,16 @@ class ObstacleManager implements Component {
       let lastObstacleLocation = this.obstacleQueue.length > 0 ? this.obstacleQueue[this.obstacleQueue.length - 1].position.z : -this.graceDistance;
       let newObstacleLocation = lastObstacleLocation - this.obstacleGap;
       let template = this.chooseObstacle();
+
+      if (!template.repeatable && template.model === this.lastObstacleName) {
+        template = OBSTACLE_TEMPLATES[0];
+      }
+
       let obstacle = this.instantiateObstacle(template, newObstacleLocation);
 
       ctx.tsgl.root.addChild(obstacle);
       this.obstacleQueue.push(obstacle);
+      this.lastObstacleName = template.model;
     }
   }
 
