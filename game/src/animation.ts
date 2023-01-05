@@ -56,7 +56,7 @@ const ANIMATIONS = {
 }
 
 class PlayerAnimation implements Component {
-  private animation: keyof typeof ANIMATIONS = "run";
+  private animation: keyof typeof ANIMATIONS | null = null;
   private animationTime = 0;
   public animationSpeed = 2;
 
@@ -68,7 +68,15 @@ class PlayerAnimation implements Component {
     this.animationSpeed = speed;
   }
 
+  public stopAnimation() {
+    this.animation = null;
+    this.animationTime = 0;
+    this.animationSpeed = 2;
+  }
+
   update(ctx: ComponentContext) {
+    if (!this.animation) return;
+
     let animation: any = ANIMATIONS[this.animation];
 
     let a = 0.5 - 0.5 * Math.cos(this.animationTime * Math.PI * 2);

@@ -3,10 +3,12 @@ import { Vector } from "tsgl/matrix";
 
 import BoxCollider from "tsgl/physics/boxcollider";
 import PlayerAnimation from "./animation";
+import GameManager from "./manager";
 import ObstacleManager from "./obstacles";
 import { lerp, lerpVector } from "./util";
 
 class PlayerController implements Component {
+  private gameManager: GameManager | null = null;
   private obstacleManager: ObstacleManager | null = null;
   private playerCollider: BoxCollider | null = null;
   private animation: PlayerAnimation | null = null;
@@ -25,12 +27,15 @@ class PlayerController implements Component {
   private slideDuration = 1;
 
   start(ctx: ComponentContext) {
+    this.gameManager = ctx.tsgl.root.getComponent(GameManager)!;
     this.obstacleManager = ctx.tsgl.root.getComponent(ObstacleManager)!;
     this.playerCollider = ctx.entity.getComponent(BoxCollider)!;
     this.animation = ctx.entity.getComponent(PlayerAnimation)!;
   }
 
   update(ctx: ComponentContext): void {
+    if (!this.gameManager!.isGameRunning()) return;
+
     if (this.specialMovement == null && ctx.tsgl.input.getMouseButtonDown(0)) {
       this.specialMovement = "jump";
       this.animation!.animationSpeed = 0.5;
@@ -129,7 +134,8 @@ class PlayerController implements Component {
     }
 
     if (this.obstacleManager!.checkCollision(this.playerCollider!)) {
-      console.log("collision detected");
+      this.animation!.stopAnimation();
+      this.gameManager!.endGame();
     }
   }
 }

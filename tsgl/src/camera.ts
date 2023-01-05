@@ -6,7 +6,7 @@ class Camera {
   public elevation: number;
 
   public fov: number;
-  private aspect: number;
+  public aspect: number;
 
   public fogDensity: number;
   public fogColor: Vector;
