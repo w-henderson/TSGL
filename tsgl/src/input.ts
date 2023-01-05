@@ -27,6 +27,9 @@ class Input {
   private mouseDown = new Map<number, number>();
   private mouseDelta: Coordinate2D = { x: 0, y: 0 };
 
+  private previousSwipePosition: Coordinate2D | null = null;
+  private currentSwipePosition: Coordinate2D | null = null;
+
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
 
@@ -35,6 +38,9 @@ class Input {
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
   }
 
   public getAxis(axis: keyof typeof AXES): number {
@@ -45,6 +51,15 @@ class Input {
 
   public getMouseDelta(): Coordinate2D {
     return this.mouseDelta;
+  }
+
+  public getSwipeDelta(): Coordinate2D {
+    if (this.previousSwipePosition === null || this.currentSwipePosition === null) return { x: 0, y: 0 };
+
+    return {
+      x: this.currentSwipePosition.x - this.previousSwipePosition.x,
+      y: this.currentSwipePosition.y - this.previousSwipePosition.y
+    };
   }
 
   public getKey(key: string): boolean {
@@ -63,6 +78,10 @@ class Input {
     return this.mouseDown.get(button) === TSGL.currentFrame;
   }
 
+  public isTouching(): boolean {
+    return this.currentSwipePosition !== null;
+  }
+
   public start() {
     this.canvas.addEventListener("click", () => {
       if (document.pointerLockElement !== this.canvas) this.canvas.requestPointerLock();
@@ -70,6 +89,11 @@ class Input {
 
     document.addEventListener("keydown", this.onKeyDown);
     document.addEventListener("keyup", this.onKeyUp);
+
+    this.canvas.addEventListener("touchstart", this.onTouchStart);
+    this.canvas.addEventListener("touchmove", this.onTouchMove);
+    this.canvas.addEventListener("touchend", this.onTouchEnd);
+    this.canvas.addEventListener("touchcancel", this.onTouchEnd);
 
     document.addEventListener("pointerlockchange", () => {
       if (document.pointerLockElement === this.canvas) {
@@ -110,6 +134,32 @@ class Input {
 
   private onKeyUp(e: KeyboardEvent) {
     this.keysDown.delete(e.key);
+  }
+
+  private onTouchStart(e: TouchEvent) {
+    if (e.touches.length === 1) {
+      this.currentSwipePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+
+    e.preventDefault();
+  }
+
+  private onTouchMove(e: TouchEvent) {
+    if (e.touches.length === 1) {
+      this.previousSwipePosition = this.currentSwipePosition;
+      this.currentSwipePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+
+    e.preventDefault();
+  }
+
+  private onTouchEnd(e: TouchEvent) {
+    if (e.touches.length === 0) {
+      this.previousSwipePosition = null;
+      this.currentSwipePosition = null;
+    }
+
+    e.preventDefault();
   }
 }
 
