@@ -2,6 +2,8 @@ import Component, { ComponentContext } from "tsgl/component";
 import Entity from "tsgl/entity";
 import { Vector } from "tsgl/matrix";
 
+import { lerp } from "./util";
+
 const ANIMATIONS = {
   run: {
     player: {
@@ -28,27 +30,27 @@ const ANIMATIONS = {
   slide: {
     player: {
       from: [0, 0, 0],
-      to: [Math.PI / 2, 0, 0],
+      to: [-Math.PI / 2, 0, 0],
     },
     headPivot: {
       from: [0, 0, 0],
-      to: [-Math.PI / 4, 0, 0]
+      to: [Math.PI / 4, 0, 0]
     },
     leftArmPivot: {
       from: [0, 0, 0],
-      to: [0, 0, 0],
+      to: [0, 0, Math.PI / 4],
     },
     rightArmPivot: {
       from: [0, 0, 0],
-      to: [0, 0, 0],
+      to: [0, 0, -Math.PI / 4],
     },
     leftLegPivot: {
       from: [0, 0, 0],
-      to: [0, 0, 0],
+      to: [0, 0, Math.PI / 12],
     },
     rightLegPivot: {
       from: [0, 0, 0],
-      to: [0, 0, 0],
+      to: [0, 0, -Math.PI / 12],
     }
   }
 }
@@ -80,9 +82,9 @@ class PlayerAnimation implements Component {
       let to = animation[entityName].to;
 
       let rotation = new Vector(
-        this.lerp(from[0], to[0], a),
-        this.lerp(from[1], to[1], a),
-        this.lerp(from[2], to[2], a)
+        lerp(from[0], to[0], a),
+        lerp(from[1], to[1], a),
+        lerp(from[2], to[2], a)
       );
 
       let entity = this.cachedEntities.get(entityName)!;
@@ -91,10 +93,6 @@ class PlayerAnimation implements Component {
     }
 
     this.animationTime += ctx.deltaTime * this.animationSpeed;
-  }
-
-  private lerp(a: number, b: number, t: number) {
-    return a + (b - a) * t;
   }
 }
 
