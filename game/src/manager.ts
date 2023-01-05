@@ -40,6 +40,10 @@ class GameManager implements Component {
     } else if (this.gameState === "postgame") {
       ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, this.player!.position.add(new Vector(0, 2, 4)), 0.05);
       ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.5, 0.05);
+
+      if (this.inputManager!.isStartingGame()) {
+        window.location.reload();
+      }
     }
   }
 }

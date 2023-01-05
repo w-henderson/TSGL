@@ -27,6 +27,7 @@ class Input {
   private mouseDown = new Map<number, number>();
   private mouseDelta: Coordinate2D = { x: 0, y: 0 };
 
+  private swipeStart: number | null = null;
   private previousSwipePosition: Coordinate2D | null = null;
   private currentSwipePosition: Coordinate2D | null = null;
 
@@ -78,8 +79,12 @@ class Input {
     return this.mouseDown.get(button) === TSGL.currentFrame;
   }
 
-  public isTouching(): boolean {
-    return this.currentSwipePosition !== null;
+  public getTouch(): boolean {
+    return this.swipeStart !== null;
+  }
+
+  public getTouchDown(): boolean {
+    return this.swipeStart === TSGL.currentFrame;
   }
 
   public start() {
@@ -139,6 +144,7 @@ class Input {
   private onTouchStart(e: TouchEvent) {
     if (e.touches.length === 1) {
       this.currentSwipePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      this.swipeStart = TSGL.currentFrame;
     }
 
     e.preventDefault();
@@ -157,6 +163,7 @@ class Input {
     if (e.touches.length === 0) {
       this.previousSwipePosition = null;
       this.currentSwipePosition = null;
+      this.swipeStart = null;
     }
 
     e.preventDefault();

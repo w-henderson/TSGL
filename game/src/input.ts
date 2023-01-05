@@ -15,7 +15,7 @@ class InputManager implements Component {
 
     this.jump = ctx.tsgl.input.getMouseButtonDown(0) || swipeDelta.y < -this.swipeThreshold;
     this.slide = ctx.tsgl.input.getMouseButtonDown(2) || swipeDelta.y > this.swipeThreshold;
-    this.startGame = ctx.tsgl.input.getKeyDown("Enter") || ctx.tsgl.input.isTouching();
+    this.startGame = ctx.tsgl.input.getKeyDown("Enter") || ctx.tsgl.input.getTouchDown();
 
     this.movement = mouseDelta.x + swipeDelta.x * this.swipeSensitivity;
   }
