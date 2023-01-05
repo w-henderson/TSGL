@@ -4,18 +4,49 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Road Run</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.min.js"></script>
   <script src="/dist/bundle.mjs"></script>
-  <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
   <canvas width="1280" height="720"></canvas>
 
-  <div>
+  <div id="score">
     Loading...
+  </div>
+
+  <div class="leaderboard hidden">
+    <h1>Leaderboard</h1>
+
+    <button id="submitButton">Submit my Score</button>
+    <button onclick="window.location.reload()">Play Again</button>
+
+    <div id="leaderboard">
+      <div>
+        <span>William</span>
+        <span>1000</span>
+      </div>
+
+      <div>
+        <span>Alice</span>
+        <span>900</span>
+      </div>
+
+      <div>
+        <span>Bob</span>
+        <span>800</span>
+      </div>
+
+      <div>
+        <span>Charlie</span>
+        <span>700</span>
+      </div>
+    </div>
   </div>
 </body>
 
