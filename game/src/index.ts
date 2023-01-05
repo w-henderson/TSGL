@@ -15,8 +15,9 @@ import { loadModels, playerModel } from "./models";
 
 window.onload = async () => {
   let canvas = document.querySelector("canvas")!;
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  let devicePixelRatio = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * devicePixelRatio;
+  canvas.height = window.innerHeight * devicePixelRatio;
 
   let tsgl = new TSGL(canvas);
   tsgl.addLight(Light.directional(new Vector(-1, -3, -1), new Vector(1, 1, 1), 1));
@@ -45,8 +46,8 @@ window.onload = async () => {
 
   window.onresize = () => {
     let canvas = document.querySelector("canvas")!;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth * devicePixelRatio;
+    canvas.height = window.innerHeight * devicePixelRatio;
     tsgl.camera.aspect = canvas.height / canvas.width;
   }
 
