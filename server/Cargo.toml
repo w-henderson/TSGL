@@ -1,0 +1,10 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+humphrey = "0.6.5"
+humphrey_json = "0.2.2"
+jasondb = "0.2.6"
+uuid = { version = "1.2.2", features = ["v4"] }
