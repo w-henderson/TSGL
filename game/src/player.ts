@@ -3,12 +3,14 @@ import { Vector } from "tsgl/matrix";
 
 import BoxCollider from "tsgl/physics/boxcollider";
 import PlayerAnimation from "./animation";
+import InputManager from "./input";
 import GameManager from "./manager";
 import ObstacleManager from "./obstacles";
 import { lerp, lerpVector } from "./util";
 
 class PlayerController implements Component {
   private gameManager: GameManager | null = null;
+  private inputManager: InputManager | null = null;
   private obstacleManager: ObstacleManager | null = null;
   private playerCollider: BoxCollider | null = null;
   private animation: PlayerAnimation | null = null;
@@ -29,6 +31,7 @@ class PlayerController implements Component {
   start(ctx: ComponentContext) {
     this.gameManager = ctx.tsgl.root.getComponent(GameManager)!;
     this.obstacleManager = ctx.tsgl.root.getComponent(ObstacleManager)!;
+    this.inputManager = ctx.entity.getComponent(InputManager)!;
     this.playerCollider = ctx.entity.getComponent(BoxCollider)!;
     this.animation = ctx.entity.getComponent(PlayerAnimation)!;
   }
@@ -36,12 +39,12 @@ class PlayerController implements Component {
   update(ctx: ComponentContext): void {
     if (!this.gameManager!.isGameRunning()) return;
 
-    if (this.specialMovement == null && ctx.tsgl.input.getMouseButtonDown(0)) {
+    if (this.specialMovement == null && this.inputManager!.isJumping()) {
       this.specialMovement = "jump";
       this.animation!.animationSpeed = 0.5;
     }
 
-    else if (this.specialMovement == null && ctx.tsgl.input.getMouseButtonDown(2)) {
+    else if (this.specialMovement == null && this.inputManager!.isSliding()) {
       this.specialMovement = "slide";
       this.animation!.playAnimation("slide", 1 / (this.slideDownAmount * this.slideDuration * 2));
       this.playerCollider!.size = new Vector(0.25, 0.1, 0.1);
@@ -109,7 +112,7 @@ class PlayerController implements Component {
       }
 
       default: {
-        let { x } = ctx.tsgl.input.getMouseDelta();
+        let x = this.inputManager!.getMovement();
         let newX = ctx.entity.position.x + x * this.mouseSensitivity * ctx.deltaTime;
 
         if (newX < this.minX) newX = this.minX;

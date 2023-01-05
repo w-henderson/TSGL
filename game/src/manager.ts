@@ -2,12 +2,14 @@ import Component, { ComponentContext } from "tsgl/component";
 import Entity from "tsgl/entity";
 import { Vector } from "tsgl/matrix";
 
+import InputManager from "./input";
 import PlayerAnimation from "./animation";
 import { lerp, lerpVector } from "./util";
 
 class GameManager implements Component {
-  private gameState: "pregame" | "game" | "postgame" = "pregame";
   private player: Entity | null = null;
+  private inputManager: InputManager | null = null;
+  private gameState: "pregame" | "game" | "postgame" = "pregame";
 
   public isGameRunning(): boolean {
     return this.gameState === "game";
@@ -27,11 +29,12 @@ class GameManager implements Component {
 
   start(ctx: ComponentContext) {
     this.player = ctx.tsgl.root.getChild("player")!;
+    this.inputManager = this.player.getComponent(InputManager)!;
   }
 
   update(ctx: ComponentContext) {
     if (this.gameState === "pregame") {
-      if (ctx.tsgl.input.getKeyDown("Enter")) {
+      if (this.inputManager!.isStartingGame()) {
         this.startGame();
       }
     } else if (this.gameState === "postgame") {

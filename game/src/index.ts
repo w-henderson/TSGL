@@ -9,6 +9,7 @@ import PlayerAnimation from "./animation";
 import RoadLoader from "./road";
 import ObstacleManager from "./obstacles";
 import GameManager from "./manager";
+import InputManager from "./input";
 
 import { loadModels, playerModel } from "./models";
 
@@ -24,6 +25,7 @@ window.onload = async () => {
 
   let player = playerModel();
   player.addComponent(new BoxCollider(new Vector(0, 0, 0), new Vector(0.25, 1, 0.1)));
+  player.addComponent(new InputManager());
   player.addComponent(new PlayerController());
   player.addComponent(new PlayerAnimation());
   player.position = new Vector(2.5, 0.3125, -2);
