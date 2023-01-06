@@ -140,6 +140,7 @@ class PlayerController implements Component {
     this.movementSpeed += this.acceleration * ctx.deltaTime;
 
     if (this.obstacleManager!.checkCollision(this.playerCollider!)) {
+      ctx.tsgl.input.unlockMouse();
       this.animation!.stopAnimation();
       this.gameManager!.endGame();
     }
