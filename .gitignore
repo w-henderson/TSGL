@@ -4,4 +4,5 @@ tsgl/src/shaders/*.ts
 package-lock.json
 Cargo.lock
 target/
-leaderboard.jdb
+*.jdb
+.adminkey
