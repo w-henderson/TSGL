@@ -51,6 +51,7 @@ div.leaderboard h1 {
   color: white;
   font-size: 3em;
   margin: 16px 0 8px 0;
+  overflow-wrap: break-word;
 }
 
 button {
@@ -96,4 +97,19 @@ div#leaderboard div span:first-child {
 div#leaderboard div span:last-child {
   flex: 1;
   text-align: right;
+}
+
+@media only screen and (max-height: 600px) {
+  div.leaderboard {
+    top: 0;
+    clip-path: none;
+    height: 100%;
+    padding: 16px 40px;
+  }
+
+  div#score {
+    top: 16px;
+    left: 16px;
+    font-size: 16px;
+  }
 }
