@@ -88,7 +88,7 @@ class Input {
   }
 
   public unlockMouse() {
-    document.exitPointerLock();
+    if (document.pointerLockElement === this.canvas) document.exitPointerLock();
   }
 
   public start() {
