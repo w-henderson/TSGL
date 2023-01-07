@@ -65,8 +65,8 @@ class PlayerController implements Component {
           ctx.entity.position.z - this.movementSpeed * ctx.deltaTime
         );
 
-        ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 0.5, 2)), 0.2);
-        ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.1, 0.2);
+        ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 0.5, 2)), 12 * ctx.deltaTime);
+        ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.1, 12 * ctx.deltaTime);
 
         this.specialMovementTime += ctx.deltaTime / this.jumpDuration;
 
@@ -83,8 +83,8 @@ class PlayerController implements Component {
             ctx.entity.position.z - this.movementSpeed * ctx.deltaTime
           );
 
-          ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 1, 1)), 0.2);
-          ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.4, 0.2);
+          ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 1, 1)), 12 * ctx.deltaTime);
+          ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.4, 12 * ctx.deltaTime);
         } else if (this.specialMovementTime > 1 - this.slideDownAmount) {
           this.animation!.animationSpeed = 1 / (this.slideDownAmount * this.slideDuration * 2);
 
@@ -98,8 +98,8 @@ class PlayerController implements Component {
             newX,
             0.8125,
             ctx.entity.position.z + 2
-          ), 0.2);
-          ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.1, 0.2);
+          ), 12 * ctx.deltaTime);
+          ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.1, 12 * ctx.deltaTime);
         } else {
           this.animation!.animationSpeed = 0;
 
@@ -109,8 +109,8 @@ class PlayerController implements Component {
             ctx.entity.position.z - this.movementSpeed * ctx.deltaTime
           );
 
-          ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 1, 1)), 0.2);
-          ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.4, 0.2);
+          ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 1, 1)), 12 * ctx.deltaTime);
+          ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.4, 12 * ctx.deltaTime);
         }
 
         this.specialMovementTime += ctx.deltaTime / this.slideDuration;
@@ -121,8 +121,8 @@ class PlayerController implements Component {
       default: {
         ctx.entity.position = new Vector(newX, 0.3125, ctx.entity.position.z - this.movementSpeed * ctx.deltaTime);
 
-        ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 0.5, 2)), 0.2);
-        ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.1, 0.2);
+        ctx.tsgl.camera.position = lerpVector(ctx.tsgl.camera.position, ctx.entity.position.add(new Vector(0, 0.5, 2)), 12 * ctx.deltaTime);
+        ctx.tsgl.camera.elevation = lerp(ctx.tsgl.camera.elevation, -0.1, 12 * ctx.deltaTime);
 
         break;
       }
