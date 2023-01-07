@@ -87,6 +87,10 @@ class Input {
     return this.swipeStart === TSGL.currentFrame;
   }
 
+  public unlockMouse() {
+    if (document.pointerLockElement === this.canvas) document.exitPointerLock();
+  }
+
   public start() {
     this.canvas.addEventListener("click", () => {
       if (document.pointerLockElement !== this.canvas) this.canvas.requestPointerLock();
