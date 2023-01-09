@@ -190,7 +190,7 @@ class Entity extends WebGLEntity {
   public render(tsgl: TSGL) {
     this.shader.useProgram();
     tsgl.camera.getPosition().uploadToShader(this.shader, "wc_camera_position");
-    Light.uploadToShader(tsgl.lights, this.shader.getHandle()!);
+    Light.uploadToShader(tsgl.lights, this.shader);
 
     this.renderGraph(tsgl.camera, Matrix.identity());
   }

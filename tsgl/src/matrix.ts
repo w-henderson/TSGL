@@ -119,7 +119,7 @@ export class Matrix {
   }
 
   public uploadToShader(program: ShaderProgram, target: string) {
-    let location = TSGL.gl.getUniformLocation(program.getHandle()!, target)!;
+    let location = program.getUniformLocation(target);
 
     if (this.rows === 4 && this.columns === 4) {
       TSGL.gl.uniformMatrix4fv(location, true, this.data);
@@ -223,7 +223,7 @@ export class Vector {
   }
 
   public uploadToShader(program: ShaderProgram, target: string) {
-    let location = TSGL.gl.getUniformLocation(program.getHandle()!, target)!;
+    let location = program.getUniformLocation(target);
     TSGL.gl.uniform3f(location, this.x, this.y, this.z);
   }
 

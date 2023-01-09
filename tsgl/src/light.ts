@@ -1,6 +1,7 @@
 import TSGL from ".";
 
 import { Vector } from "./matrix";
+import ShaderProgram from "./webgl/program";
 
 export enum LightType {
   Point = 0,
@@ -34,7 +35,7 @@ class Light {
     return new Light(direction, color, intensity, name, LightType.Directional);
   }
 
-  public static uploadToShader(lights: Light[], shader: WebGLProgram) {
+  public static uploadToShader(lights: Light[], shader: ShaderProgram) {
     let positions = new Float32Array(Light.MAX_LIGHTS * 3);
     let colors = new Float32Array(Light.MAX_LIGHTS * 3);
     let types = new Int16Array(Light.MAX_LIGHTS);
@@ -55,10 +56,10 @@ class Light {
       types[i] = light.kind;
     }
 
-    let positionLocation = TSGL.gl.getUniformLocation(shader, "light_vectors");
-    let colorLocation = TSGL.gl.getUniformLocation(shader, "light_colors");
-    let typeLocation = TSGL.gl.getUniformLocation(shader, "light_types");
-    let countLocation = TSGL.gl.getUniformLocation(shader, "light_count");
+    let positionLocation = shader.getUniformLocation("light_vectors");
+    let colorLocation = shader.getUniformLocation("light_colors");
+    let typeLocation = shader.getUniformLocation("light_types");
+    let countLocation = shader.getUniformLocation("light_count");
 
     TSGL.gl.uniform3fv(positionLocation, positions);
     TSGL.gl.uniform3fv(colorLocation, colors);

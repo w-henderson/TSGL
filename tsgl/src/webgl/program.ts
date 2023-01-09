@@ -10,6 +10,8 @@ class ShaderProgram {
   private output: string;
   private program: WebGLProgram | null;
 
+  private locations: Map<string, WebGLUniformLocation | null> = new Map();
+
   private static defaultProgram: ShaderProgram | null = null;
   private static boundProgram: ShaderProgram | null = null;
 
@@ -42,7 +44,11 @@ class ShaderProgram {
   }
 
   public getUniformLocation(name: string): WebGLUniformLocation | null {
-    return TSGL.gl.getUniformLocation(this.program!, name);
+    if (this.locations.has(name)) return this.locations.get(name)!;
+
+    let location = TSGL.gl.getUniformLocation(this.program!, name);
+    this.locations.set(name, location);
+    return location;
   }
 
   public useProgram() {
@@ -63,11 +69,11 @@ class ShaderProgram {
   }
 
   public bindTextureToShader(sampler: string, texture: number) {
-    TSGL.gl.uniform1i(TSGL.gl.getUniformLocation(this.program!, sampler), texture);
+    TSGL.gl.uniform1i(this.getUniformLocation(sampler), texture);
   }
 
   public uploadFloatToShader(name: string, value: number) {
-    TSGL.gl.uniform1f(TSGL.gl.getUniformLocation(this.program!, name), value);
+    TSGL.gl.uniform1f(this.getUniformLocation(name), value);
   }
 
   public static getDefaultProgram(): ShaderProgram {
