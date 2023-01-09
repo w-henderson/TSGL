@@ -17,12 +17,21 @@ const sources = [
 
 export const MODELS = new Map<string, (name: string) => Entity>();
 
-export async function loadModels() {
-  for (let source of sources) {
-    let obj = await Obj.parse(source);
-    let meshes = obj.getMeshes();
+type LoadedObject = {
+  source: string,
+  object: Obj
+};
 
-    MODELS.set(source, (name: string) => {
+export async function loadModels() {
+  let objects = await Promise.all(sources.map(source => new Promise<LoadedObject>(async res => res({
+    source,
+    object: await Obj.parse(source)
+  }))));
+
+  for (let obj of objects) {
+    let meshes = obj.object.getMeshes();
+
+    MODELS.set(obj.source, (name: string) => {
       let entities = meshes.map((mesh, i) => new Entity(mesh, `${name}_${i}`));
       let entity = new Entity(new Empty(), name);
       entity.addChild(...entities);
