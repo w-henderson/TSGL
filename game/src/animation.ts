@@ -10,6 +10,10 @@ const ANIMATIONS = {
       from: [0, 0, 0],
       to: [0, 0, 0],
     },
+    headPivot: {
+      from: [0, 0, 0],
+      to: [0, 0, 0]
+    },
     leftArmPivot: {
       from: [-Math.PI / 4, 0, 0],
       to: [Math.PI / 4, 0, 0],
