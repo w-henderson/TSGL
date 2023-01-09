@@ -10,7 +10,8 @@ class ShaderProgram {
   private output: string;
   private program: WebGLProgram | null;
 
-  private locations: Map<string, WebGLUniformLocation | null> = new Map();
+  private uniformLocations: Map<string, WebGLUniformLocation | null> = new Map();
+  private attribLocations: Map<string, number | null> = new Map();
 
   private static defaultProgram: ShaderProgram | null = null;
   private static boundProgram: ShaderProgram | null = null;
@@ -44,10 +45,20 @@ class ShaderProgram {
   }
 
   public getUniformLocation(name: string): WebGLUniformLocation | null {
-    if (this.locations.has(name)) return this.locations.get(name)!;
+    if (this.uniformLocations.has(name)) return this.uniformLocations.get(name)!;
 
     let location = TSGL.gl.getUniformLocation(this.program!, name);
-    this.locations.set(name, location);
+    this.uniformLocations.set(name, location);
+    return location;
+  }
+
+  public getAttribLocation(name: string): number | null {
+    if (this.attribLocations.has(name)) return this.attribLocations.get(name)!;
+
+    let location = TSGL.gl.getAttribLocation(this.program!, name);
+    if (location === -1) return null;
+
+    this.attribLocations.set(name, location);
     return location;
   }
 
@@ -60,12 +71,11 @@ class ShaderProgram {
 
   public bindDataToShader(name: string, arrayBuffer: WebGLBuffer, size: number) {
     TSGL.gl.bindBuffer(TSGL.gl.ARRAY_BUFFER, arrayBuffer);
-    let attributeLocation = TSGL.gl.getAttribLocation(this.program!, name);
+    let location = this.getAttribLocation(name);
+    if (location === null) throw new Error("Invalid attrib location");
 
-    if (attributeLocation === -1) throw Error("invalid attribute location");
-
-    TSGL.gl.enableVertexAttribArray(attributeLocation);
-    TSGL.gl.vertexAttribPointer(attributeLocation, size, TSGL.gl.FLOAT, false, 0, 0);
+    TSGL.gl.enableVertexAttribArray(location);
+    TSGL.gl.vertexAttribPointer(location, size, TSGL.gl.FLOAT, false, 0, 0);
   }
 
   public bindTextureToShader(sampler: string, texture: number) {
