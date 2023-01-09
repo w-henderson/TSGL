@@ -71,6 +71,8 @@ class TSGL {
     let deltaTime = (elapsed - this.lastFrameTimestamp) / 1000;
     this.lastFrameTimestamp = elapsed;
 
+    console.log(deltaTime);
+
     this.root.invokeComponentMethod("update", {
       tsgl: this,
       entity: this.root,
