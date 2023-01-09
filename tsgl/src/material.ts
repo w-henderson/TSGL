@@ -78,13 +78,13 @@ class Material {
     let floats = { ns: this.ns, ni: this.ni, d: this.d, illum: this.illum };
 
     for (let key in colours) {
-      let location = TSGL.gl.getUniformLocation(program.getHandle()!, key)!;
+      let location = program.getUniformLocation(key)!;
       let colour: number[] = (colours as any)[key];
       TSGL.gl.uniform3f(location, colour[0], colour[1], colour[2]);
     }
 
     for (let key in floats) {
-      let location = TSGL.gl.getUniformLocation(program.getHandle()!, key)!;
+      let location = program.getUniformLocation(key)!;
       let value: number = (floats as any)[key];
       TSGL.gl.uniform1f(location, value);
     }

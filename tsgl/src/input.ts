@@ -30,6 +30,7 @@ class Input {
   private swipeStart: number | null = null;
   private previousSwipePosition: Coordinate2D | null = null;
   private currentSwipePosition: Coordinate2D | null = null;
+  private swipeDelta: Coordinate2D = { x: 0, y: 0 };
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -55,12 +56,7 @@ class Input {
   }
 
   public getSwipeDelta(): Coordinate2D {
-    if (this.previousSwipePosition === null || this.currentSwipePosition === null) return { x: 0, y: 0 };
-
-    return {
-      x: this.currentSwipePosition.x - this.previousSwipePosition.x,
-      y: this.currentSwipePosition.y - this.previousSwipePosition.y
-    };
+    return this.swipeDelta;
   }
 
   public getKey(key: string): boolean {
@@ -122,6 +118,8 @@ class Input {
   public update() {
     this.mouseDelta.x = 0;
     this.mouseDelta.y = 0;
+    this.swipeDelta.x = 0;
+    this.swipeDelta.y = 0;
   }
 
   private onMouseMove(e: MouseEvent) {
@@ -149,6 +147,8 @@ class Input {
     if (e.touches.length === 1) {
       this.currentSwipePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       this.swipeStart = TSGL.currentFrame;
+      this.swipeDelta.x = 0;
+      this.swipeDelta.y = 0;
     }
 
     e.preventDefault();
@@ -158,6 +158,8 @@ class Input {
     if (e.touches.length === 1) {
       this.previousSwipePosition = this.currentSwipePosition;
       this.currentSwipePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      this.swipeDelta.x += this.currentSwipePosition.x - this.previousSwipePosition!.x;
+      this.swipeDelta.y += this.currentSwipePosition.y - this.previousSwipePosition!.y;
     }
 
     e.preventDefault();
@@ -168,6 +170,8 @@ class Input {
       this.previousSwipePosition = null;
       this.currentSwipePosition = null;
       this.swipeStart = null;
+      this.swipeDelta.x = 0;
+      this.swipeDelta.y = 0;
     }
 
     e.preventDefault();

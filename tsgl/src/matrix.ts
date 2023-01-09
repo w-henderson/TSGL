@@ -19,8 +19,8 @@ export class Matrix {
     }
   }
 
-  public static squareFromArray(data: number[]): Matrix {
-    let size = Math.sqrt(data.length);
+  public static squareFromArray(data: number[], size?: number): Matrix {
+    size = size || Math.sqrt(data.length);
     if (size !== Math.floor(size)) {
       throw new Error("Array must have a square number of elements");
     }
@@ -82,16 +82,36 @@ export class Matrix {
       throw new Error("Not implemented for this matrix type");
     }
 
-    let array = [
-      [this.data[0], this.data[1], this.data[2], this.data[3]],
-      [this.data[4], this.data[5], this.data[6], this.data[7]],
-      [this.data[8], this.data[9], this.data[10], this.data[11]],
-      [this.data[12], this.data[13], this.data[14], this.data[15]]
-    ];
+    let result = new Matrix(4, 4);
+    let m = this.data;
+    let r = result.data;
 
-    let result = (window as any).math.inv(array);
+    // source: https://evanw.github.io/lightgl.js/docs/matrix.html
 
-    return Matrix.squareFromArray(result.flat());
+    r[0] = m[5] * m[10] * m[15] - m[5] * m[14] * m[11] - m[6] * m[9] * m[15] + m[6] * m[13] * m[11] + m[7] * m[9] * m[14] - m[7] * m[13] * m[10];
+    r[1] = -m[1] * m[10] * m[15] + m[1] * m[14] * m[11] + m[2] * m[9] * m[15] - m[2] * m[13] * m[11] - m[3] * m[9] * m[14] + m[3] * m[13] * m[10];
+    r[2] = m[1] * m[6] * m[15] - m[1] * m[14] * m[7] - m[2] * m[5] * m[15] + m[2] * m[13] * m[7] + m[3] * m[5] * m[14] - m[3] * m[13] * m[6];
+    r[3] = -m[1] * m[6] * m[11] + m[1] * m[10] * m[7] + m[2] * m[5] * m[11] - m[2] * m[9] * m[7] - m[3] * m[5] * m[10] + m[3] * m[9] * m[6];
+
+    r[4] = -m[4] * m[10] * m[15] + m[4] * m[14] * m[11] + m[6] * m[8] * m[15] - m[6] * m[12] * m[11] - m[7] * m[8] * m[14] + m[7] * m[12] * m[10];
+    r[5] = m[0] * m[10] * m[15] - m[0] * m[14] * m[11] - m[2] * m[8] * m[15] + m[2] * m[12] * m[11] + m[3] * m[8] * m[14] - m[3] * m[12] * m[10];
+    r[6] = -m[0] * m[6] * m[15] + m[0] * m[14] * m[7] + m[2] * m[4] * m[15] - m[2] * m[12] * m[7] - m[3] * m[4] * m[14] + m[3] * m[12] * m[6];
+    r[7] = m[0] * m[6] * m[11] - m[0] * m[10] * m[7] - m[2] * m[4] * m[11] + m[2] * m[8] * m[7] + m[3] * m[4] * m[10] - m[3] * m[8] * m[6];
+
+    r[8] = m[4] * m[9] * m[15] - m[4] * m[13] * m[11] - m[5] * m[8] * m[15] + m[5] * m[12] * m[11] + m[7] * m[8] * m[13] - m[7] * m[12] * m[9];
+    r[9] = -m[0] * m[9] * m[15] + m[0] * m[13] * m[11] + m[1] * m[8] * m[15] - m[1] * m[12] * m[11] - m[3] * m[8] * m[13] + m[3] * m[12] * m[9];
+    r[10] = m[0] * m[5] * m[15] - m[0] * m[13] * m[7] - m[1] * m[4] * m[15] + m[1] * m[12] * m[7] + m[3] * m[4] * m[13] - m[3] * m[12] * m[5];
+    r[11] = -m[0] * m[5] * m[11] + m[0] * m[9] * m[7] + m[1] * m[4] * m[11] - m[1] * m[8] * m[7] - m[3] * m[4] * m[9] + m[3] * m[8] * m[5];
+
+    r[12] = -m[4] * m[9] * m[14] + m[4] * m[13] * m[10] + m[5] * m[8] * m[14] - m[5] * m[12] * m[10] - m[6] * m[8] * m[13] + m[6] * m[12] * m[9];
+    r[13] = m[0] * m[9] * m[14] - m[0] * m[13] * m[10] - m[1] * m[8] * m[14] + m[1] * m[12] * m[10] + m[2] * m[8] * m[13] - m[2] * m[12] * m[9];
+    r[14] = -m[0] * m[5] * m[14] + m[0] * m[13] * m[6] + m[1] * m[4] * m[14] - m[1] * m[12] * m[6] - m[2] * m[4] * m[13] + m[2] * m[12] * m[5];
+    r[15] = m[0] * m[5] * m[10] - m[0] * m[9] * m[6] - m[1] * m[4] * m[10] + m[1] * m[8] * m[6] + m[2] * m[4] * m[9] - m[2] * m[8] * m[5];
+
+    let det = m[0] * r[0] + m[1] * r[4] + m[2] * r[8] + m[3] * r[12];
+    for (let i = 0; i < 16; i++) r[i] /= det;
+
+    return result;
   }
 
   public transpose3x3(): Matrix {
@@ -119,7 +139,7 @@ export class Matrix {
   }
 
   public uploadToShader(program: ShaderProgram, target: string) {
-    let location = TSGL.gl.getUniformLocation(program.getHandle()!, target)!;
+    let location = program.getUniformLocation(target);
 
     if (this.rows === 4 && this.columns === 4) {
       TSGL.gl.uniformMatrix4fv(location, true, this.data);
@@ -223,7 +243,7 @@ export class Vector {
   }
 
   public uploadToShader(program: ShaderProgram, target: string) {
-    let location = TSGL.gl.getUniformLocation(program.getHandle()!, target)!;
+    let location = program.getUniformLocation(target);
     TSGL.gl.uniform3f(location, this.x, this.y, this.z);
   }
 
