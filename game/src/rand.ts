@@ -1,6 +1,6 @@
 class Random {
   private seed: number;
-  private modulus: number = Math.pow(2, 31) - 1;
+  private modulus: number = Math.pow(2, 31);
   private multiplier: number = 1103515245;
   private increment: number = 12345;
 
