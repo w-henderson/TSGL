@@ -4,6 +4,7 @@ import Entity from "tsgl/entity";
 import BoxCollider from "tsgl/physics/boxcollider";
 
 import { MODELS } from "./models";
+import Random from "./rand";
 
 type ObstacleTemplate = {
   model: string,
@@ -63,6 +64,8 @@ const OBSTACLE_TOTAL_SPAWN_CHANCE = OBSTACLE_TEMPLATES.reduce((total, template) 
 
 class ObstacleManager implements Component {
   private count = 0;
+  private rng: Random;
+
   private obstacleGap = 6;
   private obstacleBufferLength = 10;
   private graceDistance = 25;
@@ -70,6 +73,10 @@ class ObstacleManager implements Component {
   private lastObstacleName = "";
 
   private player: Entity | null = null;
+
+  constructor(seed?: number) {
+    this.rng = new Random(seed);
+  }
 
   start(ctx: ComponentContext) {
     this.player = ctx.tsgl.root.getChild("player")!;
@@ -114,7 +121,7 @@ class ObstacleManager implements Component {
   }
 
   private chooseObstacle(): ObstacleTemplate {
-    let rand = Math.random() * OBSTACLE_TOTAL_SPAWN_CHANCE;
+    let rand = this.rng.rangeContinuous(0, OBSTACLE_TOTAL_SPAWN_CHANCE);
     let total = 0;
 
     for (let template of OBSTACLE_TEMPLATES) {
@@ -130,7 +137,7 @@ class ObstacleManager implements Component {
 
   private instantiateObstacle(template: ObstacleTemplate, z: number): Entity {
     let entity = MODELS.get(template.model)!(`obstacle${this.count++}`);
-    let a = template.continuous ? Math.random() : Math.round(Math.random());
+    let a = template.continuous ? this.rng.random() : this.rng.rangeDiscrete(0, 2);
     let x = a * (template.maxSpawnX - template.minSpawnX) + template.minSpawnX;
     let collider = new BoxCollider(template.colliderCenter, template.colliderSize);
 

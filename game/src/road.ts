@@ -3,6 +3,7 @@ import Entity from "tsgl/entity";
 import { Vector } from "tsgl/matrix";
 
 import { MODELS } from "./models";
+import Random from "./rand";
 
 type RoadTemplate = {
   model: string,
@@ -26,10 +27,16 @@ const ROAD_TEMPLATES: RoadTemplate[] = [
 
 class RoadLoader implements Component {
   private count: number = 0;
+  private rng: Random;
+
   private player: Entity | null = null;
   private roadQueue: Entity[] = [];
   private roadBufferLength: number = 3;
   private lastRoadName: string | null = null;
+
+  constructor(seed?: number) {
+    this.rng = new Random(seed);
+  }
 
   start(ctx: ComponentContext) {
     this.player = ctx.tsgl.root.getChild("player")!;
@@ -66,8 +73,8 @@ class RoadLoader implements Component {
   }
 
   private chooseTemplate(): RoadTemplate {
-    let rand = Math.random() * ROAD_TEMPLATES.length;
-    let template = ROAD_TEMPLATES[Math.floor(rand)];
+    let rand = this.rng.rangeDiscrete(0, ROAD_TEMPLATES.length);
+    let template = ROAD_TEMPLATES[rand];
 
     if (!template.repeatable && template.model === this.lastRoadName) {
       template = ROAD_TEMPLATES[0];

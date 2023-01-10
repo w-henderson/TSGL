@@ -19,6 +19,9 @@ window.onload = async () => {
   canvas.width = window.innerWidth * devicePixelRatio;
   canvas.height = window.innerHeight * devicePixelRatio;
 
+  let params = new URLSearchParams(window.location.search);
+  let seed = params.get("seed") !== null ? parseInt(params.get("seed")!) : undefined;
+
   let tsgl = new TSGL(canvas);
   tsgl.addLight(Light.directional(new Vector(-2, -3, -1), new Vector(1, 1, 1), 1));
 
@@ -41,8 +44,8 @@ window.onload = async () => {
   tsgl.camera.background = new Vector(0.75, 1, 1);
 
   tsgl.root.addComponent(new GameManager());
-  tsgl.root.addComponent(new RoadLoader());
-  tsgl.root.addComponent(new ObstacleManager());
+  tsgl.root.addComponent(new RoadLoader(seed));
+  tsgl.root.addComponent(new ObstacleManager(seed));
 
   window.onresize = () => {
     let canvas = document.querySelector("canvas")!;
