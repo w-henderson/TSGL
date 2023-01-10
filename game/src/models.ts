@@ -9,6 +9,7 @@ import { Vector } from "tsgl/matrix";
 const sources = [
   "assets/models/bridge.obj",
   "assets/models/road.obj",
+  "assets/models/field.obj",
   "assets/models/car.obj",
   "assets/models/lorry.obj",
   "assets/models/cones.obj",

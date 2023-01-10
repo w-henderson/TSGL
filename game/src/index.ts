@@ -20,7 +20,7 @@ window.onload = async () => {
   canvas.height = window.innerHeight * devicePixelRatio;
 
   let tsgl = new TSGL(canvas);
-  tsgl.addLight(Light.directional(new Vector(-1, -3, -1), new Vector(1, 1, 1), 1));
+  tsgl.addLight(Light.directional(new Vector(-2, -3, -1), new Vector(1, 1, 1), 1));
 
   await loadModels();
 
