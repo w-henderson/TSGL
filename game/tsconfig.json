@@ -2,7 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "lib": [
-      "es6",
+      "es2020",
       "dom",
       "dom.iterable"
     ],
@@ -11,7 +11,7 @@
     "removeComments": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es6",
+    "target": "es2020",
     "outDir": "./dist"
   },
   "include": [
