@@ -24,7 +24,7 @@ class Random {
   }
 
   public rangeDiscrete(start: number, end: number): number {
-    return (this.next() % (end - start)) + start;
+    return Math.floor(this.rangeContinuous(start, end));
   }
 }
 
