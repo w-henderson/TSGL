@@ -1,0 +1,60 @@
+div.loading {
+  display: flex;
+  flex-direction: row;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  span:first-child {
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: #ff2d2d;
+
+    animation: bubble 1s infinite ease-in-out, color-cycle 5s infinite linear;
+  }
+
+  span:last-child {
+    display: flex;
+    place-items: center;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 24px;
+    margin-left: 24px;
+  }
+}
+
+@keyframes bubble {
+  0% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes color-cycle {
+  0% {
+    background-color: #ff2d2d;
+  }
+
+  33% {
+    background-color: #4040ff;
+  }
+
+  66% {
+    background-color: #5aff5a;
+  }
+
+  100% {
+    background-color: #ff2d2d;
+  }
+}

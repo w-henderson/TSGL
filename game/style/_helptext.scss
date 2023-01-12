@@ -1,0 +1,51 @@
+div.helptext {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 64px max(calc(50vw - 250px), 32px);
+  box-sizing: border-box;
+
+  font-size: 18px;
+  text-align: center;
+  color: white;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+
+  div.logo {
+    display: flex;
+    flex-direction: row;
+    place-content: center;
+    gap: 32px;
+    margin-bottom: 24px;
+
+    img {
+      width: 128px;
+    }
+
+    span {
+      display: flex;
+      place-items: center;
+      font-size: 32px;
+      font-weight: 800;
+    }
+  }
+
+  a {
+    color: white;
+  }
+
+  div.hr {
+    width: 64px;
+    height: 2px;
+    margin: 1em auto;
+    background-color: white;
+  }
+
+  div.footer {
+    opacity: 0.5;
+    font-size: 14px;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}

@@ -7,14 +7,53 @@
   <title>Document</title>
 
   <script src="/dist/bundle.mjs"></script>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/dist/index.css">
 </head>
 
 <body>
   <canvas width="1280" height="720"></canvas>
 
-  <div>
-    Loading...
+  <div class="loading">
+    <span></span>
+    <span>Loading...</span>
+  </div>
+
+  <div class="helptext hidden">
+    <div class="logo">
+      <img src="/assets/webgl.svg">
+      <span>Road Run</span>
+    </div>
+
+    <p><b>
+      Welcome to Road Run, a demo of the <a href="https://github.com/w-henderson/TSGL">TSGL</a> game engine.
+    </b></p>
+
+    <p>
+      <b>Start:</b> tap, or click then press enter<br>
+      <b>Move:</b> swipe or move mouse across<br>
+      <b>Jump:</b> swipe up or left click<br>
+      <b>Slide:</b> swipe down or right click
+    </p>
+
+    <p>
+      Can you beat my high score of <b>2663</b>?
+    </p>
+
+    <div class="hr"></div>
+
+    <div class="footer">
+      <span><a href="https://github.com/w-henderson/TSGL">GitHub</a></span> &bull;
+      <span>Current level seed: <a href="#" id="seed">123456</a></span>
+    </div>
+  </div>
+
+  <div class="overlay hidden">
+    <div class="logo">
+      <img src="/assets/webgl.svg">
+      <span>Road Run</span>
+    </div>
+
+    <div class="score"></div>
   </div>
 </body>
 

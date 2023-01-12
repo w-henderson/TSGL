@@ -20,7 +20,10 @@ window.onload = async () => {
   canvas.height = window.innerHeight * devicePixelRatio;
 
   let params = new URLSearchParams(window.location.search);
-  let seed = params.get("seed") !== null ? parseInt(params.get("seed")!) : undefined;
+  let seed = params.get("seed") !== null ? parseInt(params.get("seed")!) : Math.floor(Math.random() * 1000000);
+  let seedA = document.querySelector("a#seed")! as HTMLAnchorElement;
+  seedA.innerText = seed.toString();
+  seedA.href = `/?seed=${seed}`;
 
   let tsgl = new TSGL(canvas);
   tsgl.addLight(Light.directional(new Vector(-2, -3, -1), new Vector(1, 1, 1), 1));
@@ -53,6 +56,9 @@ window.onload = async () => {
     canvas.height = window.innerHeight * devicePixelRatio;
     tsgl.camera.aspect = canvas.height / canvas.width;
   }
+
+  document.querySelector(".loading")?.remove();
+  document.querySelector(".helptext")?.classList.remove("hidden");
 
   (window as any).tsgl = tsgl; // for debugging
 
