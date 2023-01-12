@@ -3,30 +3,52 @@ import TSGL from ".";
 import ShaderProgram from "./webgl/program";
 import Texture from "./webgl/texture";
 
+/**
+ * A material.
+ */
 class Material {
   public name: string = "default";
 
+  /** The specular exponent. */
   public ns: number = 32;
+  /** The ambient coefficient. */
   public ka: number[] = [1, 1, 1];
+  /** The diffuse coefficient. */
   public kd: number[] = [1, 1, 1];
+  /** The specular coefficient. */
   public ks: number[] = [1, 1, 1];
+  /** The emissive coefficient. */
   public ke: number[] = [0, 0, 0];
+  /** The optical density. */
   public ni: number = 1;
+  /** The opacity. */
   public d: number = 1;
+  /** The illumination model. */
   public illum: number = 2;
 
+  /** The diffuse texture. */
   public mapKd: Texture | null = null;
-
-  // TODO: texture maps
 
   constructor() { }
 
+  /**
+   * Creates a new named material.
+   * 
+   * @param name The name of the material.
+   * @returns The new material.
+   */
   public static withName(name: string): Material {
     let material = new Material();
     material.name = name;
     return material;
   }
 
+  /**
+   * Parses the materials from an MTL file.
+   * 
+   * @param source The URL to the MTL file.
+   * @returns A promise that resolves to an array of materials defined in the MTL file.
+   */
   public static async parse(source: string): Promise<Material[]> {
     let materials = [];
     let data = await (await fetch(source)).text();
@@ -59,6 +81,9 @@ class Material {
     return materials;
   }
 
+  /**
+   * Parses an RGB colour.
+   */
   public static parseColor(tokens: string[]): number[] {
     let r = parseFloat(tokens[1]);
     let g = parseFloat(tokens[2]);
@@ -67,12 +92,24 @@ class Material {
     return [r, g, b];
   }
 
+  /**
+   * Parses (but does not yet load) an external texture.
+   * 
+   * @param source The source of the MTL file.
+   * @param texSource The source of the texture file.
+   * @returns The texture object.
+   */
   public static parseTexture(source: string, texSource: string): Texture {
     let directory = source.split("/").slice(0, -1).join("/");
     let materialSource = `${directory}/${texSource}`;
     return new Texture(materialSource);
   }
 
+  /**
+   * Uploads the material to a shader.
+   * 
+   * @param program The shader program.
+   */
   public uploadToShader(program: ShaderProgram) {
     let colours = { ka: this.ka, kd: this.kd, ks: this.ks, ke: this.ke };
     let floats = { ns: this.ns, ni: this.ni, d: this.d, illum: this.illum };

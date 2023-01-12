@@ -34,7 +34,7 @@ class MeshComponent implements Component {
   public render(tsgl: TSGL, matrix: Matrix) {
     if (this.shader.useProgram()) {
       console.log(`first bind of stuff for frame ${TSGL.currentFrame}`);
-      tsgl.camera.getPosition().uploadToShader(this.shader, "wc_camera_position");
+      tsgl.camera.position.uploadToShader(this.shader, "wc_camera_position");
       Light.uploadToShader(tsgl.lights, this.shader);
     }
 

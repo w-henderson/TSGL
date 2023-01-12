@@ -18,6 +18,9 @@ export type ComponentContext = {
   deltaTime: number;
 }
 
+/**
+ * A component attached to an entity.
+ */
 interface Component {
   /**
    * Called before the first frame is rendered.
