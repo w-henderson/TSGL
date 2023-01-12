@@ -3,6 +3,9 @@ import SphereCollider from "./spherecollider";
 import { Vector } from "../matrix";
 import { ComponentContext } from "../component";
 
+/**
+ * An axis-aligned box collider, defined by its centre and size.
+ */
 class BoxCollider extends Collider {
   private minX: number = -1;
   private maxX: number = -1;

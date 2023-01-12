@@ -2,6 +2,9 @@ import Collider from "./collider";
 import { Vector } from "../matrix";
 import { ComponentContext } from "../component";
 
+/**
+ * A sphere collider, defined by its centre and radius.
+ */
 class SphereCollider extends Collider {
   public relativeCenter: Vector; // relative
   public relativeRadius: number; // relative
