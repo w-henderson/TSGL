@@ -1,5 +1,8 @@
 import Mesh from './mesh';
 
+/**
+ * An empty mesh.
+ */
 class Empty extends Mesh {
   constructor() {
     super();

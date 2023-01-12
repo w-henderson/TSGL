@@ -1,5 +1,10 @@
 import Mesh from './mesh';
 
+/**
+ * A cube mesh.
+ * 
+ * The cube is 2x2x2 and is centered on the origin.
+ */
 class Cube extends Mesh {
   constructor() {
     super();
