@@ -23,9 +23,24 @@ abstract class Mesh {
 
   private material: Material | null = null;
 
+  /**
+   * Returns an array of vertex positions in the format `[x0, y0, z0, x1, y1, z1, ...]`.
+   */
   abstract initializeVertexPositions(): number[];
+
+  /**
+   * Returns an array of triangle vertex indices in the format `[t0i0, t0i1, t0i2, t1i0, t1i1, t1i2, ...]`.
+   */
   abstract initializeVertexIndices(): number[];
+
+  /**
+   * Returns an array of vertex normals in the format `[x0, y0, z0, x1, y1, z1, ...]`.
+   */
   abstract initializeVertexNormals(): number[];
+
+  /**
+   * Returns an array of texture coordinates in the format `[u0, v0, u1, v1, ...]`.
+   */
   abstract initializeTextureCoordinates(): number[];
 
   /**
