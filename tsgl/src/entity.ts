@@ -3,15 +3,16 @@ import TSGL from ".";
 import { Matrix, Vector } from "./matrix";
 
 import Mesh from "./webgl/mesh";
-import WebGLEntity from "./webgl/entity";
 import Camera from "./camera";
 import Component, { ComponentContext } from "./component";
 import Obj from "./obj/obj";
 import Empty from "./webgl/empty";
 import Light from "./light";
 import Material from "./material";
+import ShaderProgram from "./webgl/program";
+import MeshComponent from "./mesh";
 
-class Entity extends WebGLEntity {
+class Entity {
   private static _id = 0;
   public readonly name: string;
 
@@ -19,6 +20,7 @@ class Entity extends WebGLEntity {
   private _rotation: Vector;
   private _scale: Vector;
 
+  private modelMatrix: Matrix;
   private scaleMatrix: Matrix;
   private transformation: Matrix;
 
@@ -26,14 +28,13 @@ class Entity extends WebGLEntity {
 
   private components: Map<string, Component>;
 
-  constructor(mesh: Mesh, name?: string) {
-    super(mesh);
-
+  constructor(name?: string) {
     this.name = name || `Entity${Entity._id++}`;
 
     this._position = new Vector(0, 0, 0);
     this._rotation = new Vector(0, 0, 0);
     this._scale = new Vector(1, 1, 1);
+    this.modelMatrix = Matrix.identity();
     this.scaleMatrix = Matrix.identity();
     this.transformation = Matrix.identity();
 
@@ -67,10 +68,6 @@ class Entity extends WebGLEntity {
 
   public getComponents(): Component[] {
     return Array.from(this.components.values());
-  }
-
-  public getMaterial(): Material {
-    return this.mesh.getMaterial();
   }
 
   public getChild(name: string): Entity | undefined {
@@ -109,9 +106,20 @@ class Entity extends WebGLEntity {
   public static async loadObj(name: string, source: string): Promise<Entity> {
     let object = await Obj.parse(source);
     let meshes = object.getMeshes();
-    let entities = meshes.map((mesh, i) => new Entity(mesh, `${name}_${i}`));
 
-    return new Entity(new Empty(), name).addChild(...entities);
+    return new Entity(name).addComponent(new MeshComponent(meshes));
+  }
+
+  public static withMesh(mesh: Mesh, name?: string): Entity {
+    return new Entity(name).addComponent(new MeshComponent([mesh]));
+  }
+
+  public static withMeshes(meshes: Mesh[], name?: string): Entity {
+    return new Entity(name).addComponent(new MeshComponent(meshes));
+  }
+
+  public static withMeshType<T extends Mesh>(c: new () => T, name?: string): Entity {
+    return Entity.withMesh(new c(), name);
   }
 
   public translate(vector: Vector) {
@@ -143,7 +151,7 @@ class Entity extends WebGLEntity {
   }
 
   private recalculateModel() {
-    this.model = Matrix.translate(this.position)
+    this.modelMatrix = Matrix.translate(this.position)
       .mul(Matrix.rotateX(this.rotation.x))
       .mul(Matrix.rotateY(this.rotation.y))
       .mul(Matrix.rotateZ(this.rotation.z));
@@ -154,7 +162,7 @@ class Entity extends WebGLEntity {
   }
 
   private recalculateTransformation() {
-    this.transformation = this.model.mul(this.scaleMatrix);
+    this.transformation = this.modelMatrix.mul(this.scaleMatrix);
   }
 
   public get position(): Vector {
@@ -188,18 +196,19 @@ class Entity extends WebGLEntity {
   }
 
   public render(tsgl: TSGL) {
-    this.shader.useProgram();
-    tsgl.camera.getPosition().uploadToShader(this.shader, "wc_camera_position");
-    Light.uploadToShader(tsgl.lights, this.shader);
-
-    this.renderGraph(tsgl.camera, Matrix.identity());
+    this.renderGraph(tsgl, Matrix.identity());
+    ShaderProgram.unbindProgram();
   }
 
-  private renderGraph(camera: Camera, parent: Matrix) {
-    this.mesh.render(camera, parent.mul(this.transformation), this.shader);
+  private renderGraph(tsgl: TSGL, parent: Matrix) {
+    let mesh = this.getComponent(MeshComponent);
+
+    if (mesh) {
+      mesh.render(tsgl, parent.mul(this.transformation));
+    }
 
     for (let child of this.children) {
-      child.renderGraph(camera, parent.mul(this.model));
+      child.renderGraph(tsgl, parent.mul(this.modelMatrix));
     }
   }
 }

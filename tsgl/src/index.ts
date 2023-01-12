@@ -25,7 +25,7 @@ class TSGL {
     this.camera = new Camera(this.canvas.height / this.canvas.width, Math.PI / 4);
     this.lights = [];
 
-    this.root = new Entity(new Empty(), "root");
+    this.root = new Entity("root");
     this.input = new Input(this.canvas);
 
     this.lastFrameTimestamp = performance.now();

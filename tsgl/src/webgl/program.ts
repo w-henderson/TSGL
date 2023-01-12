@@ -62,11 +62,19 @@ class ShaderProgram {
     return location;
   }
 
-  public useProgram() {
+  public useProgram(): boolean {
     if (ShaderProgram.boundProgram !== this) {
       TSGL.gl.useProgram(this.program!);
       ShaderProgram.boundProgram = this;
+      return true;
+    } else {
+      return false;
     }
+  }
+
+  public static unbindProgram() {
+    TSGL.gl.useProgram(null);
+    ShaderProgram.boundProgram = null;
   }
 
   public bindDataToShader(name: string, arrayBuffer: WebGLBuffer, size: number) {
