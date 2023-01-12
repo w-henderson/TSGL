@@ -1,9 +1,7 @@
 import Entity from "tsgl/entity";
 import Obj from "tsgl/obj/obj";
-
 import Cube from "tsgl/webgl/cube"
-import Empty from "tsgl/webgl/empty";
-
+import MeshComponent from "tsgl/mesh";
 import { Vector } from "tsgl/matrix";
 
 const sources = [
@@ -32,35 +30,29 @@ export async function loadModels() {
   for (let obj of objects) {
     let meshes = obj.object.getMeshes();
 
-    MODELS.set(obj.source, (name: string) => {
-      let entities = meshes.map((mesh, i) => new Entity(mesh, `${name}_${i}`));
-      let entity = new Entity(new Empty(), name);
-      entity.addChild(...entities);
-
-      return entity;
-    });
+    MODELS.set(obj.source, (name: string) => Entity.withMeshes(meshes, name));
   }
 }
 
 export function playerModel(): Entity {
   const scalingFactor = 0.125;
 
-  let player = new Entity(new Empty(), "player");
+  let player = new Entity("player");
 
-  let body = new Entity(new Cube(), "body");
+  let body = Entity.withMeshType(Cube, "body");
 
-  let headPivot = new Entity(new Empty(), "headPivot");
-  let head = new Entity(new Cube(), "head");
+  let headPivot = new Entity("headPivot");
+  let head = Entity.withMeshType(Cube, "head");
 
-  let leftArmPivot = new Entity(new Empty(), "leftArmPivot");
-  let leftArm = new Entity(new Cube(), "leftArm");
-  let rightArmPivot = new Entity(new Empty(), "rightArmPivot");
-  let rightArm = new Entity(new Cube(), "rightArm");
+  let leftArmPivot = new Entity("leftArmPivot");
+  let leftArm = Entity.withMeshType(Cube, "leftArm");
+  let rightArmPivot = new Entity("rightArmPivot");
+  let rightArm = Entity.withMeshType(Cube, "rightArm");
 
-  let leftLegPivot = new Entity(new Empty(), "leftLegPivot");
-  let leftLeg = new Entity(new Cube(), "leftLeg");
-  let rightLegPivot = new Entity(new Empty(), "rightLegPivot");
-  let rightLeg = new Entity(new Cube(), "rightLeg");
+  let leftLegPivot = new Entity("leftLegPivot");
+  let leftLeg = Entity.withMeshType(Cube, "leftLeg");
+  let rightLegPivot = new Entity("rightLegPivot");
+  let rightLeg = Entity.withMeshType(Cube, "rightLeg");
 
   body.scale = new Vector(1, 2, 0.5).scale(scalingFactor * 0.5);
   head.scale = new Vector(1, 1, 1).scale(scalingFactor * 0.5);
@@ -86,11 +78,11 @@ export function playerModel(): Entity {
   let red = [1, 0.175, 0.175];
   let blue = [0.25, 0.25, 1];
 
-  body.getMaterial().kd = red;
-  leftArm.getMaterial().kd = red;
-  rightArm.getMaterial().kd = red;
-  leftLeg.getMaterial().kd = blue;
-  rightLeg.getMaterial().kd = blue;
+  body.getComponent(MeshComponent)!.getMaterial()!.kd = red;
+  leftArm.getComponent(MeshComponent)!.getMaterial()!.kd = red;
+  rightArm.getComponent(MeshComponent)!.getMaterial()!.kd = red;
+  leftLeg.getComponent(MeshComponent)!.getMaterial()!.kd = blue;
+  rightLeg.getComponent(MeshComponent)!.getMaterial()!.kd = blue;
 
   headPivot.addChild(head);
 

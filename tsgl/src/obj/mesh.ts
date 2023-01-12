@@ -1,6 +1,9 @@
 import Material from "../material";
 import Mesh from "../webgl/mesh";
 
+/**
+ * A mesh that was loaded from a Wavefront OBJ file.
+ */
 class ObjMesh extends Mesh {
   private _material: Material;
 
@@ -10,6 +13,11 @@ class ObjMesh extends Mesh {
 
   private indices: number[];
 
+  /**
+   * Creates a blank mesh with the given material.
+   * 
+   * @param material The material to use for this mesh.
+   */
   constructor(material: Material) {
     super();
 
@@ -22,6 +30,13 @@ class ObjMesh extends Mesh {
     this.indices = [];
   }
 
+  /**
+   * Adds a vertex to the mesh.
+   * 
+   * @param vertex The coordinates of the vertex.
+   * @param normal The components of the normal.
+   * @param textureCoordinate The texture coordinate.
+   */
   public addVertex(vertex: number[], normal: number[], textureCoordinate: number[]) {
     this.vertices.push(...vertex);
     this.normals.push(...normal);
@@ -30,6 +45,9 @@ class ObjMesh extends Mesh {
     this.indices.push(this.indices.length);
   }
 
+  /**
+   * Finishes loading the mesh by initialising WebGL objects and loading textures.
+   */
   public async finish() {
     this.initialize();
 

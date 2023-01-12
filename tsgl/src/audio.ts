@@ -8,6 +8,9 @@ export type AudioConfig = {
   rolloff?: number;
 }
 
+/**
+ * A component which plays directional audio.
+ */
 class AudioComponent implements Component {
   private static audioContext: AudioContext = new AudioContext();
   private static lastUpdate: number = 0;
@@ -18,6 +21,13 @@ class AudioComponent implements Component {
 
   public autoplay: boolean;
 
+  /**
+   * Creates a new audio component.
+   * 
+   * If the configuration is not specified, it defaults to autoplay and loop off, and rolloff set to 1.
+   * 
+   * @param config The audio configuration.
+   */
   constructor(config?: AudioConfig) {
     this.element = new Audio(config?.source);
     this.source = AudioComponent.audioContext.createMediaElementSource(this.element);
@@ -36,14 +46,23 @@ class AudioComponent implements Component {
       .connect(AudioComponent.audioContext.destination);
   }
 
+  /**
+   * Plays the audio.
+   */
   public play() {
     this.element.play();
   }
 
+  /**
+   * Pauses the audio.
+   */
   public pause() {
     this.element.pause();
   }
 
+  /**
+   * Stops the audio.
+   */
   public stop() {
     this.element.pause();
     this.element.currentTime = 0;
@@ -89,7 +108,7 @@ class AudioComponent implements Component {
     if (this.lastUpdate !== TSGL.currentFrame) {
       this.lastUpdate = TSGL.currentFrame;
 
-      let position = ctx.tsgl.camera.getPosition();
+      let position = ctx.tsgl.camera.position;
       let forward = ctx.tsgl.camera.getDirection();
       let up = ctx.tsgl.camera.getUp();
 

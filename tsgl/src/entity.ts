@@ -3,15 +3,16 @@ import TSGL from ".";
 import { Matrix, Vector } from "./matrix";
 
 import Mesh from "./webgl/mesh";
-import WebGLEntity from "./webgl/entity";
-import Camera from "./camera";
+import ShaderProgram from "./webgl/program";
+
 import Component, { ComponentContext } from "./component";
 import Obj from "./obj/obj";
-import Empty from "./webgl/empty";
-import Light from "./light";
-import Material from "./material";
+import MeshComponent from "./mesh";
 
-class Entity extends WebGLEntity {
+/**
+ * An entity.
+ */
+class Entity {
   private static _id = 0;
   public readonly name: string;
 
@@ -19,6 +20,7 @@ class Entity extends WebGLEntity {
   private _rotation: Vector;
   private _scale: Vector;
 
+  private modelMatrix: Matrix;
   private scaleMatrix: Matrix;
   private transformation: Matrix;
 
@@ -26,14 +28,18 @@ class Entity extends WebGLEntity {
 
   private components: Map<string, Component>;
 
-  constructor(mesh: Mesh, name?: string) {
-    super(mesh);
-
+  /**
+   * Creates a new entity with no components or children at the origin.
+   * 
+   * @param name The name of the entity, defaults to "Entity" + the number of entities created.
+   */
+  constructor(name?: string) {
     this.name = name || `Entity${Entity._id++}`;
 
     this._position = new Vector(0, 0, 0);
     this._rotation = new Vector(0, 0, 0);
     this._scale = new Vector(1, 1, 1);
+    this.modelMatrix = Matrix.identity();
     this.scaleMatrix = Matrix.identity();
     this.transformation = Matrix.identity();
 
@@ -41,11 +47,70 @@ class Entity extends WebGLEntity {
     this.components = new Map();
   }
 
+  /**
+   * Creates a new entity from an object file.
+   * 
+   * @param name The name of the entity.
+   * @param source The URL to load the OBJ file from.
+   * @returns A promise that resolves to the loaded entity.
+   */
+  public static async loadObj(name: string, source: string): Promise<Entity> {
+    let object = await Obj.parse(source);
+    let meshes = object.getMeshes();
+
+    return new Entity(name).addComponent(new MeshComponent(meshes));
+  }
+
+  /**
+   * Creates a new entity with the given mesh.
+   * 
+   * @param mesh The mesh to assign to the entity.
+   * @param name The name of the entity.
+   * @returns The new entity.
+   */
+  public static withMesh(mesh: Mesh, name?: string): Entity {
+    return new Entity(name).addComponent(new MeshComponent([mesh]));
+  }
+
+  /**
+   * Creates a new entity with the given meshes.
+   * 
+   * @param meshes The meshes to assign to the entity.
+   * @param name The name of the entity.
+   * @returns The new entity.
+   */
+  public static withMeshes(meshes: Mesh[], name?: string): Entity {
+    return new Entity(name).addComponent(new MeshComponent(meshes));
+  }
+
+  /**
+   * Creates a new entity with the given type of mesh.
+   * 
+   * @param c The constructor of the mesh to assign to the entity.
+   * @param name The name of the entity.
+   * @returns The new entity.
+   */
+  public static withMeshType<T extends Mesh>(c: new () => T, name?: string): Entity {
+    return Entity.withMesh(new c(), name);
+  }
+
+  /**
+   * Adds one or multiple children to the entity.
+   * 
+   * @param children The child(ren) to add to the entity.
+   * @returns The entity for chaining.
+   */
   public addChild(...children: Entity[]): Entity {
     this.children.push(...children);
     return this;
   }
 
+  /**
+   * Removes one or more children from the entity.
+   * 
+   * @param children The child(ren) to remove from the entity.
+   * @returns The entity for chaining.
+   */
   public removeChild(...children: Entity[]): Entity {
     for (let child of children) {
       let index = this.children.indexOf(child);
@@ -54,6 +119,12 @@ class Entity extends WebGLEntity {
     return this;
   }
 
+  /**
+   * Adds one or more components to the entity.
+   * 
+   * @param components The component(s) to add to the entity.
+   * @returns The entity for chaining.
+   */
   public addComponent(...components: Component[]): Entity {
     for (let component of components) {
       this.components.set(component.constructor.name, component);
@@ -61,26 +132,50 @@ class Entity extends WebGLEntity {
     return this;
   }
 
+  /**
+   * Gets the given component attached to the entity.
+   * 
+   * @param c The component constructor to identify the component, for example `MeshComponent`.
+   * @returns The component, or `undefined` if not found.
+   */
   public getComponent<T extends Component>(c: new (...args: any[]) => T): T | undefined {
     return this.components.get(c.name) as T;
   }
 
+  /**
+   * Gets all the entity's components.
+   * 
+   * @returns An array of all the components attached to the entity.
+   */
   public getComponents(): Component[] {
     return Array.from(this.components.values());
   }
 
-  public getMaterial(): Material {
-    return this.mesh.getMaterial();
-  }
-
+  /**
+   * Gets a direct child of the entity.
+   * 
+   * @param name The name of the child.
+   * @returns The child entity, or `undefined` if not found.
+   */
   public getChild(name: string): Entity | undefined {
     return this.children.find((child) => child.name === name);
   }
 
+  /**
+   * Gets all the children of the entity.
+   * 
+   * @returns An array of all the entity's children.
+   */
   public getChildren(): Entity[] {
     return this.children;
   }
 
+  /**
+   * Finds an entity with the given name in the entity's hierarchy, recursively searching all children.
+   * 
+   * @param name The name of the entity to find.
+   * @returns The entity, or `undefined` if not found.
+   */
   public find(name: string): Entity | undefined {
     if (this.name === name) return this;
 
@@ -92,6 +187,12 @@ class Entity extends WebGLEntity {
     return undefined;
   }
 
+  /**
+   * Invokes a method on all components of this entity and all its descendants.
+   * 
+   * @param method The method to invoke on all components.
+   * @param ctx The context to pass to the method.
+   */
   public invokeComponentMethod(method: keyof Component, ctx: ComponentContext) {
     for (let child of this.children) {
       child.invokeComponentMethod(method, {
@@ -106,25 +207,30 @@ class Entity extends WebGLEntity {
     }
   }
 
-  public static async loadObj(name: string, source: string): Promise<Entity> {
-    let object = await Obj.parse(source);
-    let meshes = object.getMeshes();
-    let entities = meshes.map((mesh, i) => new Entity(mesh, `${name}_${i}`));
-
-    return new Entity(new Empty(), name).addChild(...entities);
-  }
-
+  /**
+   * Translates the entity's position by the given vector.
+   * 
+   * @param vector The vector to translate by.
+   */
   public translate(vector: Vector) {
     this.position = this.position.add(vector);
   }
 
+  /**
+   * Rotates the entity by the given amount around each of the three axes.
+   * 
+   * @param vector The vector to rotate by.
+   */
   public rotate(vector: Vector) {
     this.rotation = this.rotation.add(vector);
   }
 
+  /**
+   * Gets a vector in the forward (-z) direction of the entity.
+   * 
+   * @returns The forward vector.
+   */
   public forward(): Vector {
-    // return a vector in the -z direction
-
     return new Vector(
       Math.sin(this.rotation.y),
       0,
@@ -132,9 +238,12 @@ class Entity extends WebGLEntity {
     );
   }
 
+  /**
+   * Gets a vector in the right (-x) direction of the entity.
+   * 
+   * @returns The right vector.
+   */
   public right(): Vector {
-    // return a vector in the -x direction
-
     return new Vector(
       -Math.cos(this.rotation.y),
       0,
@@ -142,19 +251,28 @@ class Entity extends WebGLEntity {
     );
   }
 
+  /**
+   * Recalculates the model matrix based on position and rotation.
+   */
   private recalculateModel() {
-    this.model = Matrix.translate(this.position)
+    this.modelMatrix = Matrix.translate(this.position)
       .mul(Matrix.rotateX(this.rotation.x))
       .mul(Matrix.rotateY(this.rotation.y))
       .mul(Matrix.rotateZ(this.rotation.z));
   }
 
+  /**
+   * Recalculates the scale matrix.
+   */
   private recalculateScale() {
     this.scaleMatrix = Matrix.scale(this.scale);
   }
 
+  /**
+   * Recalculates the transformation matrix based on the model and scale matrices.
+   */
   private recalculateTransformation() {
-    this.transformation = this.model.mul(this.scaleMatrix);
+    this.transformation = this.modelMatrix.mul(this.scaleMatrix);
   }
 
   public get position(): Vector {
@@ -187,19 +305,31 @@ class Entity extends WebGLEntity {
     this.recalculateTransformation();
   }
 
+  /**
+   * Renders the entity.
+   * 
+   * @param tsgl The TSGL instance.
+   */
   public render(tsgl: TSGL) {
-    this.shader.useProgram();
-    tsgl.camera.getPosition().uploadToShader(this.shader, "wc_camera_position");
-    Light.uploadToShader(tsgl.lights, this.shader);
-
-    this.renderGraph(tsgl.camera, Matrix.identity());
+    this.renderGraph(tsgl, Matrix.identity());
+    ShaderProgram.unbindProgram();
   }
 
-  private renderGraph(camera: Camera, parent: Matrix) {
-    this.mesh.render(camera, parent.mul(this.transformation), this.shader);
+  /**
+   * Renders the entity and all its descendants using the scene graph algorithm.
+   * 
+   * @param tsgl The TSGL instance.
+   * @param parent The transformation matrix of the parent entity.
+   */
+  private renderGraph(tsgl: TSGL, parent: Matrix) {
+    let mesh = this.getComponent(MeshComponent);
+
+    if (mesh) {
+      mesh.render(tsgl, parent.mul(this.transformation));
+    }
 
     for (let child of this.children) {
-      child.renderGraph(camera, parent.mul(this.model));
+      child.renderGraph(tsgl, parent.mul(this.modelMatrix));
     }
   }
 }

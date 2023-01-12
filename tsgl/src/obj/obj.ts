@@ -1,6 +1,9 @@
 import ObjMesh from "./mesh";
 import Material from "../material";
 
+/**
+ * A Wavefront OBJ file.
+ */
 class Obj {
   private source: string;
 
@@ -10,6 +13,11 @@ class Obj {
   private meshes: ObjMesh[] = [];
   private materials: Material[] = [];
 
+  /**
+   * Creates a blank object.
+   * 
+   * @param source The URL to assign to the file.
+   */
   constructor(source: string) {
     this.source = source;
 
@@ -20,10 +28,21 @@ class Obj {
     this.materials = [];
   }
 
+  /**
+   * Gets the meshes of the object.
+   * 
+   * @returns The constituent meshes of the object.
+   */
   public getMeshes(): ObjMesh[] {
     return this.meshes;
   }
 
+  /**
+   * Loads an OBJ file from a URL.
+   * 
+   * @param source The URL to load the file from.
+   * @returns A promise that resolves to the loaded object.
+   */
   public static async parse(source: string): Promise<Obj> {
     let obj = new Obj(source);
 
@@ -60,6 +79,9 @@ class Obj {
     return obj;
   }
 
+  /**
+   * Parses a vertex from a line of the file, and adds it to the vertices array.
+   */
   private parseVertex(tokens: string[]) {
     let x = parseFloat(tokens[1]);
     let y = parseFloat(tokens[2]);
@@ -71,6 +93,9 @@ class Obj {
     this.vertices.push(z / w);
   }
 
+  /**
+   * Parses a normal from a line of the file, and adds it to the normals array.
+   */
   private parseNormal(tokens: string[]) {
     let x = parseFloat(tokens[1]);
     let y = parseFloat(tokens[2]);
@@ -81,6 +106,9 @@ class Obj {
     this.normals.push(z);
   }
 
+  /**
+   * Parses a texture coordinate from a line of the file, and adds it to the texture coordinates array.
+   */
   private parseTextureCoordinate(tokens: string[]) {
     let u = parseFloat(tokens[1]);
     let v = parseFloat(tokens[2]);
@@ -89,6 +117,9 @@ class Obj {
     this.textureCoordinates.push(v);
   }
 
+  /**
+   * Parses a face from a line of the file, and adds it to the current mesh.
+   */
   private parseFace(tokens: string[]) {
     let meshIndex = this.meshes.length - 1;
 
@@ -116,6 +147,9 @@ class Obj {
     }
   }
 
+  /**
+   * Loads a material from a URL specified in a line of the file.
+   */
   private async parseMaterial(tokens: string[]) {
     let directory = this.source.split("/").slice(0, -1).join("/");
     let materialSource = `${directory}/${tokens[1]}`;
@@ -123,6 +157,9 @@ class Obj {
     this.materials.push(...materials);
   }
 
+  /**
+   * Creates a new mesh as specified by a line of the file.
+   */
   private newMesh(tokens: string[]) {
     let materialName = tokens[1];
     let material = this.materials.find(material => material.name === materialName);
