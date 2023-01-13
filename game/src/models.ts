@@ -1,8 +1,8 @@
-import Entity from "tsgl/entity";
-import Obj from "tsgl/obj/obj";
-import Cube from "tsgl/webgl/cube"
-import MeshComponent from "tsgl/mesh";
-import { Vector } from "tsgl/matrix";
+import Entity from "@w-henderson/tsgl/entity";
+import Obj from "@w-henderson/tsgl/obj/obj";
+import Cube from "@w-henderson/tsgl/webgl/cube"
+import MeshComponent from "@w-henderson/tsgl/mesh";
+import { Vector } from "@w-henderson/tsgl/matrix";
 
 const sources = [
   "assets/models/bridge.obj",

@@ -1,7 +1,7 @@
-import Component, { ComponentContext } from "tsgl/component";
-import { Vector } from "tsgl/matrix";
+import Component, { ComponentContext } from "@w-henderson/tsgl/component";
+import { Vector } from "@w-henderson/tsgl/matrix";
 
-import BoxCollider from "tsgl/physics/boxcollider";
+import BoxCollider from "@w-henderson/tsgl/physics/boxcollider";
 import PlayerAnimation from "./animation";
 import InputManager from "./input";
 import GameManager from "./manager";

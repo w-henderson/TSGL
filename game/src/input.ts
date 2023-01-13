@@ -1,4 +1,4 @@
-import Component, { ComponentContext } from "tsgl/component";
+import Component, { ComponentContext } from "@w-henderson/tsgl/component";
 
 class InputManager implements Component {
   private jump = false;
