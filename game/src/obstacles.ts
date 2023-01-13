@@ -1,7 +1,7 @@
-import Component, { ComponentContext } from "tsgl/component";
-import { Vector } from "tsgl/matrix";
-import Entity from "tsgl/entity";
-import BoxCollider from "tsgl/physics/boxcollider";
+import Component, { ComponentContext } from "@w-henderson/tsgl/component";
+import { Vector } from "@w-henderson/tsgl/matrix";
+import Entity from "@w-henderson/tsgl/entity";
+import BoxCollider from "@w-henderson/tsgl/physics/boxcollider";
 
 import { MODELS } from "./models";
 import Random from "./rand";

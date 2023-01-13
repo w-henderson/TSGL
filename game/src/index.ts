@@ -1,8 +1,8 @@
-import TSGL from "tsgl";
+import TSGL from "@w-henderson/tsgl";
 
-import { Vector } from "tsgl/matrix";
-import Light from "tsgl/light";
-import BoxCollider from "tsgl/physics/boxcollider";
+import { Vector } from "@w-henderson/tsgl/matrix";
+import Light from "@w-henderson/tsgl/light";
+import BoxCollider from "@w-henderson/tsgl/physics/boxcollider";
 
 import PlayerController from "./player";
 import PlayerAnimation from "./animation";

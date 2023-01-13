@@ -1,6 +1,6 @@
-import Component, { ComponentContext } from "tsgl/component";
-import Entity from "tsgl/entity";
-import { Vector } from "tsgl/matrix";
+import Component, { ComponentContext } from "@w-henderson/tsgl/component";
+import Entity from "@w-henderson/tsgl/entity";
+import { Vector } from "@w-henderson/tsgl/matrix";
 
 import { MODELS } from "./models";
 import Random from "./rand";
